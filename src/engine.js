@@ -231,6 +231,27 @@ export const applyMove = (bd, game, mv) => {
 	};
 };
 
+// What can no longer matter, so the board can drop it: a dot whose lines are all drawn
+// (no move can start, pass or end there), and a drawn line whose hexes are all claimed.
+export const outOfPlay = (bd, game) => {
+	const dots = new Set();
+	const edges = new Set();
+
+	bd.verts.forEach((v, i) => {
+		if (v.adj.every((x) => game.drawn[x.e] >= 0)) {
+			dots.add(i);
+		}
+	});
+
+	bd.edges.forEach((e, i) => {
+		if (game.drawn[i] >= 0 && e.hexes.every((h) => game.owner[h] >= 0)) {
+			edges.add(i);
+		}
+	});
+
+	return { dots, edges };
+};
+
 export const scores = (game) => {
 	const sc = [0, 0, 0];
 	game.owner.forEach((o) => o > 0 && sc[o]++);

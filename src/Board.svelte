@@ -1,10 +1,13 @@
 <script>
+	import { fade } from 'svelte/transition';
 	import { ss } from './shared.svelte';
 
 	const bd = $derived(ss.board);
 	const game = $derived(ss.game);
 	const last = $derived(game.last);
 	const lastEdges = $derived(new Set(last?.edges ?? []));
+	const lastDots = $derived(new Set(last?.path ?? []));
+	const gone = $derived(ss.outOfPlay);
 	const sel = $derived(ss.sel);
 	const targets = $derived(sel === null ? [] : (ss.movesFrom.get(sel) ?? []));
 	const targetSet = $derived(new Set(targets.map((t) => t.other)));
@@ -66,27 +69,30 @@
 		{/if}
 	{/each}
 
+	<!-- Out-of-play lines fade away, but the last move stays up until the next one. -->
 	{#each bd.edges as e, i (i)}
-		{#if game.drawn[i] >= 0 && !lastEdges.has(i)}
-			<line class="edge" x1={bd.verts[e.a].x} y1={bd.verts[e.a].y} x2={bd.verts[e.b].x} y2={bd.verts[e.b].y} />
+		{#if game.drawn[i] >= 0 && (!gone.edges.has(i) || lastEdges.has(i))}
+			<line
+				class="edge"
+				class:last={lastEdges.has(i)}
+				class:draw={ss.fresh && lastEdges.has(i)}
+				x1={bd.verts[e.a].x}
+				y1={bd.verts[e.a].y}
+				x2={bd.verts[e.b].x}
+				y2={bd.verts[e.b].y}
+				out:fade
+			/>
 		{/if}
 	{/each}
-
-	{#if last}
-		{#key last}
-			{#each last.edges as i (i)}
-				{@const e = bd.edges[i]}
-				<line class="edge last" class:draw={ss.fresh} x1={bd.verts[e.a].x} y1={bd.verts[e.a].y} x2={bd.verts[e.b].x} y2={bd.verts[e.b].y} />
-			{/each}
-		{/key}
-	{/if}
 
 	{#each targets as t (t.other)}
 		<polyline class="hint" points={pts(t.move.path)} />
 	{/each}
 
 	{#each bd.verts as v, i (i)}
-		<circle class={dotClass(i)} cx={v.x} cy={v.y} r={i === sel ? 0.13 : 0.1} />
+		{#if !gone.dots.has(i) || lastDots.has(i)}
+			<circle class={dotClass(i)} cx={v.x} cy={v.y} r={i === sel ? 0.13 : 0.1} out:fade />
+		{/if}
 	{/each}
 
 	{#each targets as t (t.other)}
@@ -160,7 +166,7 @@
 	}
 
 	.dead {
-		opacity: 0.25;
+		opacity: 0.5;
 	}
 
 	.selected {
