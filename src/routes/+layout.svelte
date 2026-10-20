@@ -23,8 +23,8 @@
 			--ink: #d3d3d3;
 			--line: #ffffff30;
 			--orange: #ff7300;
-			--fill1: #ff00ff44;
-			--fill2: #00ffff4c;
+			--fill1: #ff00ff80;
+			--fill2: #00ffff70;
 			--p1: #ff00ffc0;
 			--p2: #00ffffc8;
 

@@ -1,6 +1,6 @@
 import { chooseMove } from './ai';
 import { APP_STATE, HUMAN, LEVELS, ROBOT, ROBOT_DELAY } from './const';
-import { applyMove, boardOf, emptyGame, legalMoves, outOfPlay, scores, SIZES } from './engine';
+import { applyMove, boardOf, emptyGame, deadDots, legalMoves, scores, SIZES } from './engine';
 import { post } from './utils';
 
 let robotTimer;
@@ -39,7 +39,7 @@ class Store {
 	board = $derived(this.game && boardOf(this.game.size));
 	legal = $derived(this.game && !this.game.over ? legalMoves(this.board, this.game.drawn) : []);
 	scores = $derived(this.game ? scores(this.game) : [0, 0, 0]);
-	outOfPlay = $derived(this.game && outOfPlay(this.board, this.game));
+	deadDots = $derived(this.game && deadDots(this.board, this.game));
 	robotTurn = $derived(this.mode.opp === ROBOT && this.game?.turn === 2 && !this.game.over);
 
 	// dot -> [{ other, move }] for every legal move that starts or ends there

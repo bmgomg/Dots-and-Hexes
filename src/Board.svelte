@@ -1,13 +1,10 @@
 <script>
-	import { fade } from 'svelte/transition';
 	import { ss } from './shared.svelte';
 
 	const bd = $derived(ss.board);
 	const game = $derived(ss.game);
 	const last = $derived(game.last);
 	const lastEdges = $derived(new Set(last?.edges ?? []));
-	const lastDots = $derived(new Set(last?.path ?? []));
-	const gone = $derived(ss.outOfPlay);
 	const sel = $derived(ss.sel);
 	const targets = $derived(sel === null ? [] : (ss.movesFrom.get(sel) ?? []));
 	const targetSet = $derived(new Set(targets.map((t) => t.other)));
@@ -17,7 +14,12 @@
 	const pts = (path) => path.map((i) => `${bd.verts[i].x},${bd.verts[i].y}`).join(' ');
 
 	// Live dots start a legal move; while a dot is selected, only it and its targets stay live.
+	// Inactive dots are out of play for good: every line at them is drawn.
 	const dotClass = (i) => {
+		if (ss.deadDots.has(i)) {
+			return 'dot inactive';
+		}
+
 		if (game.over) {
 			return 'dot';
 		}
@@ -69,9 +71,8 @@
 		{/if}
 	{/each}
 
-	<!-- Out-of-play lines fade away, but the last move stays up until the next one. -->
 	{#each bd.edges as e, i (i)}
-		{#if game.drawn[i] >= 0 && (!gone.edges.has(i) || lastEdges.has(i))}
+		{#if game.drawn[i] >= 0}
 			<line
 				class="edge"
 				class:last={lastEdges.has(i)}
@@ -80,7 +81,6 @@
 				y1={bd.verts[e.a].y}
 				x2={bd.verts[e.b].x}
 				y2={bd.verts[e.b].y}
-				out:fade
 			/>
 		{/if}
 	{/each}
@@ -90,9 +90,7 @@
 	{/each}
 
 	{#each bd.verts as v, i (i)}
-		{#if !gone.dots.has(i) || lastDots.has(i)}
-			<circle class={dotClass(i)} cx={v.x} cy={v.y} r={i === sel ? 0.13 : 0.1} out:fade />
-		{/if}
+		<circle class={dotClass(i)} cx={v.x} cy={v.y} r={i === sel ? 0.13 : ss.deadDots.has(i) ? 0.12 : 0.1} />
 	{/each}
 
 	{#each targets as t (t.other)}
@@ -167,6 +165,11 @@
 
 	.dead {
 		opacity: 0.5;
+	}
+
+	/* Triangula's disabled dot */
+	.inactive {
+		fill: #00000060;
 	}
 
 	.selected {
