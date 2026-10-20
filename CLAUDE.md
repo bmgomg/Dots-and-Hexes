@@ -23,7 +23,8 @@ message band, prompts, toolbar (back, resign, reset stats, hints).
 
 - `src/engine.js` — pure geometry and rules: `boardOf(size)`, `legalMoves`, `claimsIf`, `applyMove`, `deadDots`, `scores`.
   `drawn[e]` / `owner[h]` hold the player (1 or 2), or -1.
-- `src/ai.js` — `chooseMove(board, drawn, level)`: easy / medium / hard, ported from the prototype.
+- `src/ai.js` — `chooseMove(board, drawn, level)`: easy / medium / hard, ported from the prototype. Hard also plays
+  the endgame perfectly: with `SOLVE_LINES` (20) or fewer lines left it runs an exact alpha-beta search.
 - `src/shared.svelte.js` — the store `ss`: screens, mode, stats, game, robot turns, tap hit-testing, localStorage.
 - `src/Board.svelte` — the SVG board. Colors are Triangula's (`--fill1/2`, `--p1/2`, orange last move, lime dots).
   Dots out of play (`deadDots`) fade away, as in Triangula; all drawn lines stay.
