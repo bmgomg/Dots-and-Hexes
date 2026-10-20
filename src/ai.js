@@ -113,6 +113,7 @@ const solve = (bd, drawn) => {
 			pairs.push({
 				m: bit(p.es[0]) | bit(p.es[1]),
 				a: p.a,
+				mid: p.m,
 				c: p.c,
 				hs: hexesOf(p.es),
 				move: { a: p.a, c: p.c, path: [p.a, p.m, p.c], es: p.es }
@@ -133,8 +134,8 @@ const solve = (bd, drawn) => {
 	const moves = (u) => {
 		const dl = full & ~u;
 		const restrict = restrictRoot || dl !== 0;
-		const ok = (a, c) => !restrict || rootTouched[a] || rootTouched[c] || ((adjMask[a] | adjMask[c]) & dl) !== 0;
-		const out = pairs.filter((x) => (u & x.m) === x.m && ok(x.a, x.c));
+		const ok = (...vs) => !restrict || vs.some((v) => rootTouched[v] || (adjMask[v] & dl) !== 0);
+		const out = pairs.filter((x) => (u & x.m) === x.m && ok(x.a, x.mid, x.c));
 
 		if (out.length) {
 			return out;

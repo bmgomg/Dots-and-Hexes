@@ -34,7 +34,8 @@ message band, prompts, toolbar (back, resign, reset stats, hints).
 
 ## Rules (agreed in the prototype)
 
-- A move is two undrawn lines meeting at a dot; one end dot must already touch a drawn line (first move free).
+- A move is two undrawn lines meeting at a dot; one of its three dots (either end or the
+  middle) must already touch a drawn line (first move free), so drawn lines stay one connected network.
 - Closing a hex earns another move.
 - When no pair move is left, single lines; one earns another move only by closing two hexes at once.
 - Against the robot, the robot is player 2.

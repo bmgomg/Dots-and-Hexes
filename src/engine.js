@@ -134,17 +134,18 @@ export const emptyGame = (size) => {
 	};
 };
 
-// Pair moves: two undrawn lines that meet at a dot, and one of the two end dots must already
-// touch a drawn line (the first move is free). When no pair move is left, single lines,
-// preferring ones that touch a drawn line.
+// Pair moves: two undrawn lines that meet at a dot, and one of the path's three dots (either
+// end or the middle) must already touch a drawn line (the first move is free). Either way the
+// drawn lines stay one connected network. When no pair move is left, single lines, preferring
+// ones that touch a drawn line.
 export const legalMoves = (bd, drawn) => {
 	const out = [];
 	const restrict = drawn.some((x) => x >= 0);
 	const touched = (v) => bd.verts[v].adj.some((x) => drawn[x.e] >= 0);
-	const ok = (a, c) => !restrict || touched(a) || touched(c);
+	const ok = (...vs) => !restrict || vs.some(touched);
 
 	for (const p of bd.pairs) {
-		if (drawn[p.es[0]] < 0 && drawn[p.es[1]] < 0 && ok(p.a, p.c)) {
+		if (drawn[p.es[0]] < 0 && drawn[p.es[1]] < 0 && ok(p.a, p.m, p.c)) {
 			out.push({ a: p.a, c: p.c, path: [p.a, p.m, p.c], es: p.es });
 		}
 	}

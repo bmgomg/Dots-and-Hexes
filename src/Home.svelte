@@ -22,7 +22,7 @@
 		{/snippet}
 		<div class="bullets">
 			{@render bullet(`Take turns ${hi}tapping two dots</span> two steps apart. Both lines between them get drawn.`)}
-			{@render bullet(`One of the two dots must ${hi}already touch a line</span>. The first move is free.`)}
+			{@render bullet(`The path must ${hi}already touch a line</span>, at either end or in the middle. The first move is free.`)}
 			{@render bullet(`Close a hex to claim it, then ${hi}move again</span>.`)}
 			{@render bullet(
 				`When no two-line move is left, draw ${hi}one line at a time</span>. Then you move again only if your line closes two hexes at once.`
