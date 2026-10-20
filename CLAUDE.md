@@ -10,7 +10,7 @@ now a SvelteKit app scaffolded from Triangula (configs, palette, fonts). No them
 - `src/ai.js` — `chooseMove(board, drawn, level)`: easy / medium / hard, ported from the prototype.
 - `src/shared.svelte.js` — the store `ss`: mode, game, undo history, tap hit-testing, robot turns, localStorage.
 - `src/Board.svelte` — the SVG board. Colors are Triangula's (`--fill1/2`, `--p1/2`, orange last move, lime dots).
-  Dots out of play (`deadDots` in the engine) get Triangula's disabled look; all drawn lines stay.
+  Dots out of play (`deadDots` in the engine) fade away, as in Triangula; all drawn lines stay.
 
 ## Rules (agreed in the prototype)
 

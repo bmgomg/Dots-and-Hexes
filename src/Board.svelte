@@ -1,4 +1,5 @@
 <script>
+	import { fade } from 'svelte/transition';
 	import { ss } from './shared.svelte';
 
 	const bd = $derived(ss.board);
@@ -14,12 +15,7 @@
 	const pts = (path) => path.map((i) => `${bd.verts[i].x},${bd.verts[i].y}`).join(' ');
 
 	// Live dots start a legal move; while a dot is selected, only it and its targets stay live.
-	// Inactive dots are out of play for good: every line at them is drawn.
 	const dotClass = (i) => {
-		if (ss.deadDots.has(i)) {
-			return 'dot inactive';
-		}
-
 		if (game.over) {
 			return 'dot';
 		}
@@ -89,8 +85,11 @@
 		<polyline class="hint" points={pts(t.move.path)} />
 	{/each}
 
+	<!-- Like Triangula, dots out of play (every line at them drawn) fade away. -->
 	{#each bd.verts as v, i (i)}
-		<circle class={dotClass(i)} cx={v.x} cy={v.y} r={i === sel ? 0.13 : ss.deadDots.has(i) ? 0.12 : 0.1} />
+		{#if !ss.deadDots.has(i)}
+			<circle class={dotClass(i)} cx={v.x} cy={v.y} r={i === sel ? 0.13 : 0.1} out:fade />
+		{/if}
 	{/each}
 
 	{#each targets as t (t.other)}
@@ -165,11 +164,6 @@
 
 	.dead {
 		opacity: 0.5;
-	}
-
-	/* Triangula's disabled dot */
-	.inactive {
-		fill: #00000060;
 	}
 
 	.selected {
