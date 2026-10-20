@@ -62,7 +62,6 @@
 		letter-spacing: 0.04em;
 		cursor: pointer;
 		transition: scale 0.1s;
-		text-shadow: 2px 2px 2px black;
 		gap: 5px;
 	}
 

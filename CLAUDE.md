@@ -3,7 +3,8 @@
 _Two lines a move. Close a hex, go again._ (working tagline)
 
 Two-player dots-and-boxes on hexes; every move draws two lines. Prototyped as a single HTML artifact in claude.ai,
-now a SvelteKit app that replicates Triangula's screens, layout and flow. No theme of its own yet.
+now a SvelteKit app with Triangula's structure and flow, but not its look: plain text buttons, one font
+(Roboto Condensed), no images except the BMG splash. Board colors are Triangula's. No theme of its own yet.
 
 ## Screens and flow (as in Triangula)
 
@@ -26,9 +27,9 @@ message band, prompts, toolbar (back, resign, reset stats, hints).
 - `src/shared.svelte.js` — the store `ss`: screens, mode, stats, game, robot turns, tap hit-testing, localStorage.
 - `src/Board.svelte` — the SVG board. Colors are Triangula's (`--fill1/2`, `--p1/2`, orange last move, lime dots).
   Dots out of play (`deadDots`) fade away, as in Triangula; all drawn lines stay.
-- The rest are Triangula's components, adapted: `Home`, `Launcher`, `Game Page`, `Stats`, `Scoreboard`, `Avatar`,
-  `Pie`, `Message`, `Prompt`, `Toolbar`, `Tool Button`, `Prompt Button`, `Splash`, `Frame`. `Hex.svelte` draws the
-  hexagon icons. Images and fonts in `src/lib` are copied from Triangula.
+- The rest follow Triangula's components: `Home`, `Launcher`, `Game Page`, `Stats`, `Scoreboard`, `Avatar`, `Pie`,
+  `Message`, `Prompt`, `Toolbar`, `Splash`, `Frame`. `Button.svelte` is the one plain button (toolbar, launcher,
+  prompts); `Hex.svelte` draws the hexagon icons.
 
 ## Rules (agreed in the prototype)
 

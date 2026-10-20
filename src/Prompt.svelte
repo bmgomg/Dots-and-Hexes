@@ -1,7 +1,7 @@
 <script>
 	import { fade } from 'svelte/transition';
 	import { PROMPT_NO, PROMPT_PLAY_AGAIN, PROMPT_RESET_STATS, PROMPT_RESIGN, PROMPT_START } from './const';
-	import PromptButton from './Prompt Button.svelte';
+	import Button from './Button.svelte';
 	import { ss } from './shared.svelte';
 
 	const over = $derived(!!ss.winner);
@@ -21,15 +21,15 @@
 	{#key ss.prompt}
 		<div class="prompt grid" in:fade|global={{ delay }} out:fade>
 			{#if ss.prompt === PROMPT_RESET_STATS}
-				<PromptButton label={ss.prompt} onClick={ss.resetStats} />
-				<PromptButton label={PROMPT_NO} onClick={dismiss} />
+				<Button big label={ss.prompt} onClick={ss.resetStats} />
+				<Button big label={PROMPT_NO} onClick={dismiss} />
 			{:else if start}
-				<PromptButton label={PROMPT_START} onClick={onRobotStart} />
+				<Button big label={PROMPT_START} onClick={onRobotStart} />
 			{:else if over}
-				<PromptButton label={PROMPT_PLAY_AGAIN} onClick={ss.newGame} />
+				<Button big label={PROMPT_PLAY_AGAIN} onClick={ss.newGame} />
 			{:else if ss.prompt === PROMPT_RESIGN}
-				<PromptButton label={ss.prompt} onClick={ss.resign} />
-				<PromptButton label={PROMPT_NO} onClick={dismiss} />
+				<Button big label={ss.prompt} onClick={ss.resign} />
+				<Button big label={PROMPT_NO} onClick={dismiss} />
 			{/if}
 		</div>
 	{/key}

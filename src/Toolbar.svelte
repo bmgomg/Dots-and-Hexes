@@ -1,12 +1,7 @@
 <script>
-	import Back from '$lib/images/Back.webp';
-	import HintsOff from '$lib/images/Hints Off.webp';
-	import HintsOn from '$lib/images/Hints On.webp';
-	import ResetStats from '$lib/images/Reset Stats.webp';
-	import Surrender from '$lib/images/Surrender.webp';
 	import { PROMPT_RESET_STATS, PROMPT_RESIGN } from './const';
 	import { ss } from './shared.svelte';
-	import ToolButton from './Tool Button.svelte';
+	import Button from './Button.svelte';
 
 	const noBack = $derived(!ss.launcher && ss.robotTurn && !ss.robotStart);
 	const noResign = $derived(ss.launcher || ss.robotTurn || !ss.started || !!ss.winner);
@@ -39,16 +34,10 @@
 
 <div class="toolbar">
 	<div class="row">
-		<ToolButton img={Back} onClick={onBack} hue={60} disabled={noBack} label={['back']} />
-		<ToolButton img={Surrender} label={['resign', '']} onClick={() => setPrompt(PROMPT_RESIGN)} hue={150} disabled={noResign} />
-		<ToolButton
-			img={ResetStats}
-			label={['reset', 'stats']}
-			onClick={() => setPrompt(PROMPT_RESET_STATS)}
-			hue={-170}
-			disabled={noResetStats}
-		/>
-		<ToolButton img={ss.showHints ? HintsOn : HintsOff} label={['hints', onOff(ss.showHints)]} onClick={onHints} />
+		<Button label="back" onClick={onBack} disabled={noBack} />
+		<Button label="resign" onClick={() => setPrompt(PROMPT_RESIGN)} disabled={noResign} />
+		<Button label="reset stats" onClick={() => setPrompt(PROMPT_RESET_STATS)} disabled={noResetStats} />
+		<Button label="hints {onOff(ss.showHints)}" onClick={onHints} />
 	</div>
 </div>
 
@@ -63,6 +52,6 @@
 		display: grid;
 		grid-auto-flow: column;
 		place-content: center;
-		gap: 15px;
+		gap: 8px;
 	}
 </style>

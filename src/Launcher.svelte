@@ -1,11 +1,10 @@
 <script>
-	import Play from '$lib/images/Play.webp';
 	import { fade } from 'svelte/transition';
 	import { LEVELS, ROBOT } from './const';
 	import { SIZES } from './engine';
 	import Hex from './Hex.svelte';
 	import { ss } from './shared.svelte';
-	import ToolButton from './Tool Button.svelte';
+	import Button from './Button.svelte';
 
 	let size = $derived(ss.mode.size);
 	let level = $derived(ss.mode.level);
@@ -52,7 +51,7 @@
 			<span></span>
 		{/if}
 		<div class="play">
-			<ToolButton img={Play} hue={-60} height={60} onClick={onPlay} />
+			<Button big label="Play" onClick={onPlay} />
 		</div>
 	</div>
 {/if}
@@ -92,10 +91,8 @@
 		display: grid;
 		place-content: center;
 		box-sizing: border-box;
-		text-shadow: 2px 2px 2px black;
 		color: var(--ink);
 		border: 2px solid var(--ink);
-		filter: drop-shadow(0 5px 5px black);
 		opacity: 0.6;
 		cursor: pointer;
 		transition: all 0.2s;
@@ -107,11 +104,10 @@
 
 	.size-selected {
 		opacity: 1;
-		background: -webkit-linear-gradient(-90deg, #fff -150%, var(--bg) 100%);
+		background: #ffffff20;
 		--hi: #fff;
 		color: var(--hi);
 		border: 2px solid var(--hi);
-		filter: drop-shadow(0 5px 5px black) brightness(1.2);
 		pointer-events: none;
 	}
 
@@ -120,7 +116,6 @@
 		gap: 10px;
 		place-items: center;
 		box-sizing: border-box;
-		text-shadow: 1px 1px 1px black;
 		color: var(--ink);
 		opacity: 0.6;
 		cursor: pointer;
@@ -145,13 +140,11 @@
 		aspect-ratio: 1;
 		border-radius: 50%;
 		border: 2px solid var(--ink);
-		filter: drop-shadow(0 5px 5px black);
 	}
 
 	.skill-img-wrapper-selected {
 		border: 2px solid var(--hi);
-		background: -webkit-linear-gradient(-90deg, #fff -150%, var(--bg) 100%);
-		filter: drop-shadow(0 5px 5px black) brightness(1.2);
+		background: #ffffff20;
 	}
 
 	.skill-img {

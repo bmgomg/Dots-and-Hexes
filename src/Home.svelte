@@ -48,7 +48,6 @@
 		font-size: 52px;
 		letter-spacing: 0.04em;
 		color: var(--orange);
-		filter: drop-shadow(0 0 3px black) drop-shadow(0 0 5px black);
 	}
 
 	.amp {
@@ -58,12 +57,10 @@
 	.tagline {
 		justify-self: center;
 		margin-top: 12px;
-		font-family: Play;
 		font-style: italic;
 		font-size: 18px;
 		letter-spacing: 0.06em;
 		opacity: 0.85;
-		text-shadow: 2px 2px 2px black;
 	}
 
 	.gold {
@@ -75,7 +72,6 @@
 		width: 380px;
 		display: grid;
 		gap: 20px;
-		text-shadow: 2px 2px 2px black;
 	}
 
 	.bullet-item {
@@ -90,11 +86,9 @@
 		height: 5px;
 		aspect-ratio: 1;
 		translate: 0 10px;
-		box-shadow: 2px 2px 2px black;
 	}
 
 	.text {
-		font-family: Play;
 		font-size: 20.5px;
 		line-height: 1.1em;
 		letter-spacing: 0.04em;
