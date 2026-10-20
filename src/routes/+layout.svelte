@@ -6,29 +6,24 @@
 
 <style>
 	:global {
-		html {
-			background: #080010;
-		}
-
 		body {
 			margin: 0;
 			padding: 0;
-			min-height: 100dvh;
-			font-family: RC, system-ui, sans-serif;
-			font-size: 16px;
-			line-height: 1.4;
+			height: 100dvh;
+			width: 100%;
+			font-family: JA;
 
 			/* Triangula's palette */
 			--bg: #20003d;
 			--ink: #d3d3d3;
-			--line: #ffffff30;
+			--gold: #f5db94;
 			--orange: #ff7300;
 			--fill1: #ff00ff80;
 			--fill2: #00ffff70;
 			--p1: #ff00ffc0;
 			--p2: #00ffffc8;
 
-			background: radial-gradient(ellipse 80% 60% at 15% 15%, #3a0060 0%, #1a0035 50%, #080010 100%);
+			background: var(--bg);
 			color: var(--ink);
 		}
 
@@ -36,6 +31,37 @@
 			-webkit-tap-highlight-color: transparent;
 			-webkit-touch-callout: none;
 			user-select: none;
+		}
+
+		.nope {
+			pointer-events: none;
+			cursor: initial;
+		}
+
+		.grid {
+			display: grid;
+		}
+
+		.flowcol {
+			grid-auto-flow: column;
+		}
+
+		.ga11 {
+			grid-area: 1/1;
+		}
+
+		.psc {
+			place-self: center;
+		}
+
+		@font-face {
+			font-family: JA;
+			src: url('$lib/fonts/Jungle Adventurer.ttf');
+		}
+
+		@font-face {
+			font-family: Play;
+			src: url('$lib/fonts/Play Regular.ttf');
 		}
 
 		@font-face {

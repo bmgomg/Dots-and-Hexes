@@ -1,13 +1,16 @@
 <script>
 	import { fade } from 'svelte/transition';
-	import { ss } from './shared.svelte';
+	import { boardSize, ss } from './shared.svelte';
 
 	const bd = $derived(ss.board);
 	const game = $derived(ss.game);
 	const last = $derived(game.last);
 	const lastEdges = $derived(new Set(last?.edges ?? []));
 	const sel = $derived(ss.sel);
-	const targets = $derived(sel === null ? [] : (ss.movesFrom.get(sel) ?? []));
+	const targets = $derived(sel === null || ss.robotTurn ? [] : (ss.movesFrom.get(sel) ?? []));
+	const hints = $derived(ss.showHints && sel === null && !ss.robotTurn ? ss.claiming : []);
+	const width = $derived(boardSize());
+	const height = $derived((width * bd.view[3]) / bd.view[2]);
 	const targetSet = $derived(new Set(targets.map((t) => t.other)));
 
 	let svg;
@@ -16,12 +19,12 @@
 
 	// Live dots start a legal move; while a dot is selected, only it and its targets stay live.
 	const dotClass = (i) => {
-		if (game.over) {
-			return 'dot';
-		}
-
 		if (i === sel) {
 			return 'dot selected';
+		}
+
+		if (ss.winner || ss.robotTurn) {
+			return 'dot';
 		}
 
 		const live = sel === null ? ss.movesFrom.has(i) : targetSet.has(i);
@@ -40,8 +43,12 @@
 <svg
 	bind:this={svg}
 	class="board nohi"
-	class:locked={ss.robotTurn || game.over}
+	class:locked={ss.robotTurn || ss.winner}
+	class:shake={game.resign}
 	viewBox={bd.view.join(' ')}
+	{width}
+	{height}
+	in:fade
 	role="img"
 	aria-label="Game board"
 	{onpointerdown}
@@ -85,6 +92,10 @@
 		<polyline class="hint" points={pts(t.move.path)} />
 	{/each}
 
+	{#each hints as mv, i (i)}
+		<polyline class="hint" points={pts(mv.path)} />
+	{/each}
+
 	<!-- Like Triangula, dots out of play (every line at them drawn) fade away. -->
 	{#each bd.verts as v, i (i)}
 		{#if !ss.deadDots.has(i)}
@@ -103,10 +114,10 @@
 
 <style>
 	.board {
+		grid-area: 3/1;
+		place-self: center;
 		display: block;
-		width: 100%;
-		height: auto;
-		max-height: 60dvh;
+		overflow: visible;
 		cursor: pointer;
 		touch-action: manipulation;
 	}
@@ -179,6 +190,28 @@
 
 	.ring.sel {
 		animation: none;
+	}
+
+	.shake {
+		animation: shake 0.1s 6 0.5s linear;
+	}
+
+	@keyframes shake {
+		from {
+			transform: scale(1, 1);
+		}
+
+		33% {
+			transform: scale(1, 1.05);
+		}
+
+		66% {
+			transform: scale(1.05, 1);
+		}
+
+		to {
+			transform: scale(1, 1);
+		}
 	}
 
 	@keyframes draw {

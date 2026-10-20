@@ -1,5 +1,14 @@
 export const APP_STATE = 'BMG • Dots and Hexes V1';
+export const DX = 450;
+export const DY = 800;
+export const PROMPT_START = 'Start';
+export const PROMPT_PLAY_AGAIN = 'Play again?';
+export const PROMPT_RESIGN = 'resign – are you sure?';
+export const PROMPT_RESET_STATS = 'reset stats - are you sure?';
+export const PROMPT_NO = 'never mind';
+export const MSG_START_TIP = 'tip: tap a player to make them go first';
+export const MSG_SINGLES = 'one line at a time now';
 export const LEVELS = ['easy', 'medium', 'hard'];
 export const ROBOT = 'robot';
 export const HUMAN = 'human';
-export const ROBOT_DELAY = 600;
+export const WINNER_DRAW = 3;

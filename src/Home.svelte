@@ -1,0 +1,109 @@
+<script>
+	import { fade } from 'svelte/transition';
+	import { onMount } from 'svelte';
+	import Option from './Home Option.svelte';
+	import { ss } from './shared.svelte';
+
+	onMount(ss.loadCommon);
+
+	const hi = '<span style="color: var(--gold);">';
+</script>
+
+{#if ss.home}
+	<div class="home ga11 nohi" in:fade={{ duration: 200 }}>
+		<div class="title">Dots <span class="amp">&amp;</span> Hexes</div>
+		<div class="tagline">Two lines a move. <span class="gold">Close a hex, go again.</span></div>
+		{#snippet bullet(text)}
+			<div class="bullet-item">
+				<div class="bullet"></div>
+				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+				<div class="text">{@html text}</div>
+			</div>
+		{/snippet}
+		<div class="bullets">
+			{@render bullet(`Take turns ${hi}tapping two dots</span> two steps apart. Both lines between them get drawn.`)}
+			{@render bullet(`One of the two dots must ${hi}already touch a line</span>. The first move is free.`)}
+			{@render bullet(`Close a hex to claim it, then ${hi}move again</span>.`)}
+			{@render bullet(
+				`When no two-line move is left, draw ${hi}one line at a time</span>. A single line earns another move only by closing two hexes.`
+			)}
+			{@render bullet(`When every line is drawn, the ${hi}most hexes</span> win.`)}
+		</div>
+		<div class="ops">
+			<Option opp="human" />
+			<Option opp="robot" />
+		</div>
+	</div>
+{/if}
+
+<style>
+	.home {
+		display: grid;
+		z-index: 1;
+		place-content: center;
+	}
+
+	.title {
+		justify-self: center;
+		font-size: 52px;
+		letter-spacing: 0.04em;
+		color: var(--orange);
+		filter: drop-shadow(0 0 3px black) drop-shadow(0 0 5px black);
+	}
+
+	.amp {
+		color: var(--ink);
+	}
+
+	.tagline {
+		justify-self: center;
+		margin-top: 12px;
+		font-family: Play;
+		font-style: italic;
+		font-size: 18px;
+		letter-spacing: 0.06em;
+		opacity: 0.85;
+		text-shadow: 2px 2px 2px black;
+	}
+
+	.gold {
+		color: var(--gold);
+	}
+
+	.bullets {
+		margin: 40px 0;
+		width: 380px;
+		display: grid;
+		gap: 20px;
+		text-shadow: 2px 2px 2px black;
+	}
+
+	.bullet-item {
+		display: grid;
+		grid: auto / auto 1fr;
+		gap: 1em;
+	}
+
+	.bullet {
+		background: var(--gold);
+		border-radius: 50%;
+		height: 5px;
+		aspect-ratio: 1;
+		translate: 0 10px;
+		box-shadow: 2px 2px 2px black;
+	}
+
+	.text {
+		font-family: Play;
+		font-size: 20.5px;
+		line-height: 1.1em;
+		letter-spacing: 0.04em;
+	}
+
+	.ops {
+		place-self: center;
+		display: grid;
+		grid-auto-flow: column;
+		gap: 40px;
+	}
+</style>
