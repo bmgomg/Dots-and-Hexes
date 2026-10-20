@@ -1,0 +1,22 @@
+{
+	"workbench.colorCustomizations": /*dark*/ {
+		"titleBar.activeBackground": "#37005c",
+		"titleBar.inactiveBackground": "#37005c",
+		"tab.inactiveBackground": "#37005cA0",
+		"tab.inactiveForeground": "#FFFFFFD0",
+		"tab.activeBackground": "#000",
+		"sideBar.background": "#203040",
+		"terminal.background": "#203040"
+	},
+	"window.title": "${dirty}${rootName} • ${activeEditorShort}",
+	"terminal.integrated.cursorBlinking": true,
+	"editor.guides.bracketPairs": true,
+	"editor.guides.bracketPairsHorizontal": true,
+	"markdown.validate.enabled": true,
+	"json.schemaDownload.enable": false,
+	"files.exclude": {
+		"**/build": true,
+		"**/dist": true,
+		"**/node_modules": true
+	}
+}
