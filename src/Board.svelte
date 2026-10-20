@@ -19,7 +19,7 @@
 
 	// Live dots start a legal move; while a dot is selected, only it and its targets stay live.
 	const dotClass = (i) => {
-		if (i === sel) {
+		if (i === sel || i === ss.to) {
 			return 'dot selected';
 		}
 
@@ -99,7 +99,7 @@
 	<!-- Like Triangula, dots out of play (every line at them drawn) fade away. -->
 	{#each bd.verts as v, i (i)}
 		{#if !ss.deadDots.has(i)}
-			<circle class={dotClass(i)} cx={v.x} cy={v.y} r={i === sel ? 0.13 : 0.1} out:fade />
+			<circle class={dotClass(i)} cx={v.x} cy={v.y} r={i === sel || i === ss.to ? 0.13 : 0.1} out:fade />
 		{/if}
 	{/each}
 
@@ -107,9 +107,9 @@
 		<circle class="ring" cx={bd.verts[t.other].x} cy={bd.verts[t.other].y} r="0.22" />
 	{/each}
 
-	{#if sel !== null}
-		<circle class="ring sel" cx={bd.verts[sel].x} cy={bd.verts[sel].y} r="0.22" />
-	{/if}
+	{#each [sel, ss.to].filter((i) => i !== null) as i (i)}
+		<circle class="ring sel" cx={bd.verts[i].x} cy={bd.verts[i].y} r="0.22" />
+	{/each}
 </svg>
 
 <style>
@@ -171,7 +171,7 @@
 	/* hints: moves that close a hex, apart from the blue preview of a selected dot */
 	.gold {
 		stroke: var(--gold);
-		stroke-width: 0.07;
+		stroke-opacity: 0.45;
 	}
 
 	.dot {

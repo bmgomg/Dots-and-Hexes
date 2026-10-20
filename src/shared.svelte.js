@@ -45,6 +45,9 @@ class Store {
 
 	sel = $state(null);
 
+	// the robot's second dot, shown before its move lands
+	to = $state(null);
+
 	// the robot is between its two taps
 	busy = $state(false);
 
@@ -165,6 +168,7 @@ class Store {
 		this.message = null;
 		this.prompt = null;
 		this.sel = null;
+		this.to = null;
 		this.fresh = false;
 		this.game = emptyGame(this.mode.size);
 		this.persist();
@@ -204,6 +208,7 @@ class Store {
 		this.dismissStartTip();
 		this.game = applyMove(this.board, this.game, mv);
 		this.sel = null;
+		this.to = null;
 		this.fresh = true;
 
 		if (this.winner) {
@@ -283,10 +288,14 @@ class Store {
 			this.sel = mv.a;
 
 			robotTimer = post(() => {
-				this.busy = false;
-				this.play(mv);
-			}, 700);
-		}, 700);
+				this.to = mv.c;
+
+				robotTimer = post(() => {
+					this.busy = false;
+					this.play(mv);
+				}, 400);
+			}, 600);
+		}, 600);
 	};
 
 	// p is a point in board units
