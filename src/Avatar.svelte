@@ -1,5 +1,5 @@
 <script>
-	import { LEVELS, ROBOT } from './const';
+	import { LEVEL_NAMES, LEVELS, ROBOT } from './const';
 	import Hex from './Hex.svelte';
 	import { ss } from './shared.svelte';
 
@@ -16,7 +16,7 @@
 		<Hex size={56} fill={player === 1 ? 'var(--p1)' : 'var(--p2)'} pips={robot ? level : 0} />
 	</div>
 	{#if robot}
-		<div class="level">{ss.mode.level}</div>
+		<div class="level">{LEVEL_NAMES[ss.mode.level]}</div>
 	{/if}
 </div>
 

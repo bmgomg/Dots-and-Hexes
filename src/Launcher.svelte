@@ -1,6 +1,6 @@
 <script>
 	import { fade } from 'svelte/transition';
-	import { LEVELS, ROBOT } from './const';
+	import { LEVEL_NAMES, LEVELS, ROBOT } from './const';
 	import { SIZES } from './engine';
 	import Hex from './Hex.svelte';
 	import { ss } from './shared.svelte';
@@ -44,7 +44,7 @@
 						<div class="skill-img-wrapper" class:skill-img-wrapper-selected={lv === level}>
 							<div class="skill-img"><Hex size={46} fill="var(--p2)" pips={i + 1} /></div>
 						</div>
-						<span>{lv}</span>
+						<span>{LEVEL_NAMES[lv]}</span>
 					</div>
 				{/each}
 			</div>

@@ -9,11 +9,11 @@ now a SvelteKit app with Triangula's structure and flow, but not its look: plain
 ## Screens and flow (as in Triangula)
 
 Splash (BMG) → Home (title, tagline, rules, "play with friend" / "play against ai") → Launcher (size 7/13/19;
-robot level easy/medium/hard) → Game page: stats row, scoreboard (avatar, score, pie, score, avatar), board,
+robot level easy / not easy / hard / harder; ids `easy medium hard harder`) → Game page: stats row, scoreboard (avatar, score, pie, score, avatar), board,
 message band, prompts, toolbar (back, resign, reset stats, hints).
 
 - Avatars are plain hexagons in the player colors and spin on their turn. Robot avatars from Triangula are not
-  copied; the robot's hexagon shows its level as 1–3 pips plus the level name.
+  copied; the robot's hexagon shows its level as 1–4 pips plus the level name.
 - Before the first line, tapping a player makes them go first. A robot made to go first waits for the Start prompt.
 - Hints show the moves that would close a hex as gold dashes (the selected-dot preview is blue), like Triangula's claiming-move hints.
 - Stats and the unfinished game are stored per mode (opponent, size, level). No undo, as in Triangula.
@@ -23,8 +23,8 @@ message band, prompts, toolbar (back, resign, reset stats, hints).
 
 - `src/engine.js` — pure geometry and rules: `boardOf(size)`, `legalMoves`, `claimsIf`, `applyMove`, `deadDots`, `scores`.
   `drawn[e]` / `owner[h]` hold the player (1 or 2), or -1.
-- `src/ai.js` — `chooseMove(board, drawn, level)`: easy / medium / hard, ported from the prototype. Hard also plays
-  the endgame perfectly: with `SOLVE_LINES` (20) or fewer lines left it runs an exact alpha-beta search.
+- `src/ai.js` — `chooseMove(board, drawn, level)`: easy / medium / hard, ported from the prototype, and harder:
+  hard plus a perfect endgame (with `SOLVE_LINES` (20) or fewer lines left, an exact alpha-beta search).
 - `src/shared.svelte.js` — the store `ss`: screens, mode, stats, game, robot turns, tap hit-testing, localStorage.
 - `src/Board.svelte` — the SVG board. Colors are Triangula's (`--fill1/2`, `--p1/2`, orange last move, lime dots).
   Dots out of play (`deadDots`) fade away, as in Triangula; all drawn lines stay.

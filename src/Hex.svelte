@@ -1,5 +1,5 @@
 <script>
-	// A hexagon in a player's color, with 1–3 pips for a robot's level.
+	// A hexagon in a player's color, with 1–4 pips for a robot's level.
 	const { size = 50, fill, pips = 0 } = $props();
 
 	const HEX = '0.87,-0.5 0.87,0.5 0,1 -0.87,0.5 -0.87,-0.5 0,-1';

@@ -66,8 +66,8 @@ const hardPick = (bd, d, moves) => {
 	return pick(cand);
 };
 
-// Hard switches from hardPick to an exact search once this few lines are left. Higher is
-// stronger and slower. Against hardPick alone, 20 won 55–67% of games (by board size), 24 won 67–82%.
+// Harder switches from hardPick to an exact search once this few lines are left. Higher is
+// stronger and slower. Against Hard, 20 won 55–67% of games (by board size), 24 won 67–82%.
 const SOLVE_LINES = 20;
 
 // Insurance for slow devices: past this the search gives up and hardPick moves instead.
@@ -240,6 +240,7 @@ const solve = (bd, drawn) => {
 };
 
 // Easy: takes any hex it can, otherwise random. Medium: also avoids giving a hex away on the next move.
+// Hard: hardPick. Harder: hardPick until the endgame, then exact play.
 export const chooseMove = (bd, drawn, level) => {
 	const d = drawn.slice();
 	const moves = legalMoves(bd, d);
@@ -262,6 +263,10 @@ export const chooseMove = (bd, drawn, level) => {
 	}
 
 	if (level === 'hard') {
+		return hardPick(bd, d, moves);
+	}
+
+	if (level === 'harder') {
 		return solve(bd, drawn) ?? hardPick(bd, d, moves);
 	}
 
