@@ -29,7 +29,7 @@
 
 		const live = sel === null ? ss.movesFrom.has(i) : targetSet.has(i);
 
-		return live ? 'dot live' : 'dot dead';
+		return live ? 'dot live' : 'dot gray';
 	};
 
 	const onpointerdown = (e) => {
@@ -59,6 +59,12 @@
 			<stop offset="0.12" stop-color="lime" />
 			<stop offset="0.65" stop-color="darkgreen" />
 			<stop offset="1" stop-color="lime" />
+		</radialGradient>
+		<radialGradient id="dot-gray" fx="0.4" fy="0.3" r="0.6">
+			<stop offset="0" stop-color="#ddd" />
+			<stop offset="0.12" stop-color="#999" />
+			<stop offset="0.65" stop-color="#555" />
+			<stop offset="1" stop-color="#888" />
 		</radialGradient>
 		<radialGradient id="dot-selected" fx="0.4" fy="0.3" r="0.6">
 			<stop offset="0" stop-color="white" />
@@ -179,8 +185,9 @@
 		transition: opacity 0.2s;
 	}
 
-	.dead {
-		opacity: 0.5;
+	/* can't be tapped right now */
+	.gray {
+		fill: url(#dot-gray);
 	}
 
 	.selected {
