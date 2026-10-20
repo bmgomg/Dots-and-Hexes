@@ -15,7 +15,7 @@ message band, prompts, toolbar (back, resign, reset stats, hints).
 - Avatars are plain hexagons in the player colors and spin on their turn. Robot avatars from Triangula are not
   copied; the robot's hexagon shows its level as 1–3 pips plus the level name.
 - Before the first line, tapping a player makes them go first. A robot made to go first waits for the Start prompt.
-- Hints show the moves that would close a hex (dashed), like Triangula's claiming-move hints.
+- Hints show the moves that would close a hex as gold dashes (the selected-dot preview is blue), like Triangula's claiming-move hints.
 - Stats and the unfinished game are stored per mode (opponent, size, level). No undo, as in Triangula.
 - No sound or music yet.
 

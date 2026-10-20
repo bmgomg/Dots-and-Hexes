@@ -93,7 +93,7 @@
 	{/each}
 
 	{#each hints as mv, i (i)}
-		<polyline class="hint" points={pts(mv.path)} />
+		<polyline class="hint gold" points={pts(mv.path)} />
 	{/each}
 
 	<!-- Like Triangula, dots out of play (every line at them drawn) fade away. -->
@@ -166,6 +166,12 @@
 		stroke: #4682b4a0;
 		stroke-width: 0.05;
 		stroke-dasharray: 0.12 0.12;
+	}
+
+	/* hints: moves that close a hex, apart from the blue preview of a selected dot */
+	.gold {
+		stroke: var(--gold);
+		stroke-width: 0.07;
 	}
 
 	.dot {
