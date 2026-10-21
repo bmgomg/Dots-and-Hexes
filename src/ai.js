@@ -66,7 +66,7 @@ const hardPick = (bd, d, moves) => {
 	return pick(cand);
 };
 
-// Harder switches from hardPick to an exact search once this few lines are left. Higher is
+// killer switches from hardPick to an exact search once this few lines are left. Higher is
 // stronger and slower. Against Hard, 20 won 55–67% of games (by board size), 24 won 67–82%.
 const SOLVE_LINES = 20;
 
@@ -241,7 +241,7 @@ const solve = (bd, drawn) => {
 };
 
 // Easy: takes any hex it can, otherwise random. Medium: also avoids giving a hex away on the next move.
-// Hard: hardPick. Harder: hardPick until the endgame, then exact play.
+// Hard: hardPick. killer: hardPick until the endgame, then exact play.
 export const chooseMove = (bd, drawn, level) => {
 	const d = drawn.slice();
 	const moves = legalMoves(bd, d);
@@ -267,7 +267,7 @@ export const chooseMove = (bd, drawn, level) => {
 		return hardPick(bd, d, moves);
 	}
 
-	if (level === 'harder') {
+	if (level === 'killer') {
 		return solve(bd, drawn) ?? hardPick(bd, d, moves);
 	}
 

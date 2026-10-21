@@ -5,7 +5,7 @@ import { post } from './utils';
 
 export const newStats = () => ({ plays: 0, wins1: 0, wins2: 0, total: 0, best: 0 });
 
-let robotTimer;
+let moveTimer;
 
 // Taps snap to the nearest dot that makes sense right now, in board units (dot spacing = 1).
 const nearest = (bd, ids, p, maxR) => {
@@ -163,7 +163,7 @@ class Store {
 	};
 
 	newGame = () => {
-		clearTimeout(robotTimer);
+		clearTimeout(moveTimer);
 		this.busy = false;
 		this.message = null;
 		this.prompt = null;
@@ -284,13 +284,13 @@ class Store {
 		this.busy = true;
 		this.dismissStartTip();
 
-		robotTimer = post(() => {
+		moveTimer = post(() => {
 			this.sel = mv.a;
 
-			robotTimer = post(() => {
+			moveTimer = post(() => {
 				this.to = mv.c;
 
-				robotTimer = post(() => {
+				moveTimer = post(() => {
 					this.busy = false;
 					this.play(mv);
 				}, 400);
@@ -300,7 +300,7 @@ class Store {
 
 	// p is a point in board units
 	tapAt = (p) => {
-		if (!this.game || this.winner || this.robotTurn || this.prompt) {
+		if (!this.game || this.winner || this.robotTurn || this.prompt || this.busy) {
 			return;
 		}
 
@@ -319,7 +319,16 @@ class Store {
 		if (v === this.sel) {
 			this.sel = null;
 		} else if (v !== null) {
-			this.play(targets.find((t) => t.other === v).move);
+			// ring the other end first, then draw the path
+			const mv = targets.find((t) => t.other === v).move;
+
+			this.to = v;
+			this.busy = true;
+
+			moveTimer = post(() => {
+				this.busy = false;
+				this.play(mv);
+			}, 300);
 		} else {
 			this.sel = nearest(bd, live, p, 0.5);
 		}

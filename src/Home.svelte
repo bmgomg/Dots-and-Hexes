@@ -12,7 +12,7 @@
 {#if ss.home}
 	<div class="home ga11 nohi" in:fade={{ duration: 200 }}>
 		<div class="title">Dots <span class="amp">&amp;</span> Hexes</div>
-		<div class="tagline">Two lines a move. <span class="gold">Close a hex, go again.</span></div>
+		<div class="tagline">Draw two. <span class="gold">Close a hex. Go again.</span></div>
 		{#snippet bullet(text)}
 			<div class="bullet-item">
 				<div class="bullet"></div>

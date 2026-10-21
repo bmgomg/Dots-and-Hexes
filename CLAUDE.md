@@ -1,6 +1,6 @@
 # Dots and Hexes
 
-_Two lines a move. Close a hex, go again._ (working tagline)
+_Draw two. Close a hex. Go again._ (working tagline)
 
 Two-player dots-and-boxes on hexes; every move draws two lines. Prototyped as a single HTML artifact in claude.ai,
 now a SvelteKit app with Triangula's structure and flow, but not its look: plain text buttons, one font
@@ -9,7 +9,7 @@ now a SvelteKit app with Triangula's structure and flow, but not its look: plain
 ## Screens and flow (as in Triangula)
 
 Splash (BMG) → Home (title, tagline, rules, "play with friend" / "play against ai") → Launcher (size 7/13/19;
-robot level easy / not easy / hard / harder; ids `easy medium hard harder`) → Game page: stats row, scoreboard (avatar, score, pie, score, avatar), board,
+robot level easy / not easy / hard / killer; ids `easy medium hard killer`) → Game page: stats row, scoreboard (avatar, score, pie, score, avatar), board,
 message band, prompts, toolbar (back, resign, reset stats, hints).
 
 - Avatars are plain hexagons in the player colors and spin on their turn. Robot avatars from Triangula are not
@@ -23,7 +23,7 @@ message band, prompts, toolbar (back, resign, reset stats, hints).
 
 - `src/engine.js` — pure geometry and rules: `boardOf(size)`, `legalMoves`, `claimsIf`, `applyMove`, `deadDots`, `scores`.
   `drawn[e]` / `owner[h]` hold the player (1 or 2), or -1.
-- `src/ai.js` — `chooseMove(board, drawn, level)`: easy / medium / hard, ported from the prototype, and harder:
+- `src/ai.js` — `chooseMove(board, drawn, level)`: easy / medium / hard, ported from the prototype, and killer:
   hard plus a perfect endgame (with `SOLVE_LINES` (20) or fewer lines left, an exact alpha-beta search).
 - `src/shared.svelte.js` — the store `ss`: screens, mode, stats, game, robot turns, tap hit-testing, localStorage.
 - `src/Board.svelte` — the SVG board. Colors are Triangula's (`--fill1/2`, `--p1/2`, orange last move, lime dots).

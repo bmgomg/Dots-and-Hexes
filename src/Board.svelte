@@ -7,7 +7,10 @@
 	const last = $derived(game.last);
 	const lastEdges = $derived(new Set(last?.edges ?? []));
 	const sel = $derived(ss.sel);
-	const targets = $derived(sel === null || ss.robotTurn ? [] : (ss.movesFrom.get(sel) ?? []));
+	// once the other end is picked, only its path stays previewed until it is drawn
+	const targets = $derived(
+		sel === null || ss.robotTurn ? [] : (ss.movesFrom.get(sel) ?? []).filter((t) => ss.to === null || t.other === ss.to)
+	);
 	const hints = $derived(ss.showHints && sel === null && !ss.robotTurn ? ss.claiming : []);
 	const width = $derived(boardSize());
 	const height = $derived((width * bd.view[3]) / bd.view[2]);
@@ -109,12 +112,9 @@
 		{/if}
 	{/each}
 
-	{#each targets as t (t.other)}
-		<circle class="ring" cx={bd.verts[t.other].x} cy={bd.verts[t.other].y} r="0.22" />
-	{/each}
-
+	<!-- as in Triangula, a still ring marks the selected dot (and the robot's second tap) -->
 	{#each [sel, ss.to].filter((i) => i !== null) as i (i)}
-		<circle class="ring sel" cx={bd.verts[i].x} cy={bd.verts[i].y} r="0.22" />
+		<circle class="ring" cx={bd.verts[i].x} cy={bd.verts[i].y} r="0.22" transition:fade={{ duration: 100 }} />
 	{/each}
 </svg>
 
@@ -198,11 +198,6 @@
 		fill: none;
 		stroke: var(--orange);
 		stroke-width: 0.035;
-		animation: pulse 0.6s ease-in-out infinite alternate;
-	}
-
-	.ring.sel {
-		animation: none;
 	}
 
 	.shake {
@@ -240,16 +235,9 @@
 		}
 	}
 
-	@keyframes pulse {
-		from {
-			opacity: 0.35;
-		}
-	}
-
 	@media (prefers-reduced-motion: reduce) {
 		.draw,
-		.fresh,
-		.ring {
+		.fresh {
 			animation: none;
 			stroke-dashoffset: 0;
 		}
