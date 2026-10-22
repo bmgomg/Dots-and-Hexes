@@ -53,26 +53,26 @@
 	.tagline {
 		justify-self: center;
 		margin-top: 16px;
-		font-size: 19px;
+		font-size: 21px;
 	}
 
 	.bullets {
-		margin: 34px 0 44px;
-		width: 386px;
+		margin: 26px 0 34px;
+		width: 420px;
 		display: grid;
-		gap: 14px;
+		gap: 10px;
 	}
 
 	.bullet-item {
 		display: grid;
-		grid: auto / 12px 1fr;
-		gap: 12px;
+		grid: auto / 13px 1fr;
+		gap: 11px;
 	}
 
 	.bullet {
-		width: 12px;
-		height: 12px;
-		margin-top: 7px;
+		width: 13px;
+		height: 13px;
+		margin-top: 8px;
 		fill: var(--p1);
 		opacity: 0.75;
 	}
@@ -83,8 +83,9 @@
 	}
 
 	.text {
-		font-size: 17px;
-		line-height: 25px;
+		font-size: 19px;
+		line-height: 27px;
+		text-wrap: balance; /* even lines, so no one-word last line */
 	}
 
 	.ops {

@@ -61,7 +61,7 @@
 	.op {
 		display: grid;
 		place-items: center;
-		font-size: 18px;
+		font-size: 20px;
 		cursor: var(--pencil);
 		transition: scale 0.1s;
 		gap: 5px;
