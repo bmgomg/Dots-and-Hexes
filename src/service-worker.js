@@ -56,9 +56,9 @@ self.addEventListener('fetch', (event) => {
 
 	event.respondWith(
 		(async () => {
-			// built files never change under their names, so the cache wins
+			// built files never change under their names, so the cache wins (whatever their ?v= query)
 			if (assets.includes(url.pathname)) {
-				const hit = await caches.match(req);
+				const hit = await caches.match(req, { ignoreSearch: true });
 
 				if (hit) {
 					return hit;
