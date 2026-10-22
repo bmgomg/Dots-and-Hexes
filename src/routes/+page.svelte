@@ -79,7 +79,7 @@
 		place-content: center;
 		box-sizing: border-box;
 		/* the desk around the pad: walnut, until the wood grain paints over it */
-		background: #4a3a2e;
+		background: var(--desk);
 	}
 
 	.desk {

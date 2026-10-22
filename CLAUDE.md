@@ -43,7 +43,7 @@ message band, prompts, toolbar (back, resign, reset stats, sfx, music).
 - `src/Defs.svelte` — the shared SVG filters (`#pencil`, `#crayon`, `#grain`), colored-pencil fills
   (`#fill1/2/3`) and doodles (`#underline2`, `#swoosh`), in pixels; mounted once in `+page.svelte`.
 - Colors are tokens in `routes/+layout.svelte` (`--bg`, `--ink`, `--line`, `--last`, `--p1`, `--p2`, `--p2-text`,
-  `--friend`, `--gold`, …), with the global `.hl` (highlighter) and `.card` (taped index card) classes.
+  `--friend`, `--gold`, `--desk` (also the theme color in `app.html` and the manifest), …), with the global `.hl` (highlighter) and `.card` (taped index card) classes.
 - The rest follow Triangula's components: `Home`, `Launcher`, `Game Page`, `Stats`, `Scoreboard`, `Avatar`, `Pie`,
   `Message`, `Prompt`, `Toolbar`, `Splash`, `Frame` (the graph pad). `Button.svelte` is the one plain handwritten
   button (toolbar, launcher, prompts; it taps; a toggle passes `alt`, its other label, so it keeps one width); `Hex.svelte` draws the hexagon icons (`color` p1 / p2 / friend).

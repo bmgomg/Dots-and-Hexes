@@ -28,8 +28,9 @@
 			--gold: rgba(255, 216, 58, 0.62); /* highlighter: key words, button hover */
 			--card: #fdfdf8; /* index cards taped to the pad */
 			--tape: rgba(225, 222, 205, 0.75);
+			--desk: #4a3a2e; /* the walnut desk under the pad, and the browser's bars around it */
 
-			background: var(--bg);
+			background: var(--desk);
 			color: var(--ink);
 		}
 
