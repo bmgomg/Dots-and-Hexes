@@ -52,15 +52,15 @@
 
 	.tagline {
 		justify-self: center;
-		margin-top: 22px;
+		margin-top: 16px;
 		font-size: 21px;
 	}
 
 	.bullets {
-		margin: 34px 0 46px;
-		width: 430px;
+		margin: 26px 0 34px;
+		width: 420px;
 		display: grid;
-		gap: 16px;
+		gap: 10px;
 	}
 
 	.bullet-item {
