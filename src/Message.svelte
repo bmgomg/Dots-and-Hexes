@@ -1,6 +1,6 @@
 <script>
 	import { fade } from 'svelte/transition';
-	import { MSG_START_TIP } from './const';
+	import { MSG_SINGLES, MSG_START_TIP } from './const';
 	import { boardSize, ss } from './shared.svelte';
 
 	// Centered in the band between the scoreboard and the top of the board. The board is
@@ -22,7 +22,8 @@
 			onpointerdown={onTapStartTip}
 			transition:fade
 		>
-			{ss.message}
+			<!-- the switch to single lines changes the turn rule, so it is highlighted -->
+			<span class:hl={ss.message === MSG_SINGLES}>{ss.message}</span>
 		</div>
 	{/key}
 {/if}
