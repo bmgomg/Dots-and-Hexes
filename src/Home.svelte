@@ -58,7 +58,7 @@
 
 	.bullets {
 		margin: 26px 0 34px;
-		width: 420px;
+		width: 400px;
 		display: grid;
 		gap: 10px;
 	}

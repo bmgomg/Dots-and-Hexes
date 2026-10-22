@@ -1,5 +1,5 @@
-// Sound effects and music, from Triangula: one sprite of effects and a looping track.
-import music from '$lib/sounds/music.mp3';
+// Sound effects, from Triangula: one sprite of effects. The looping music track is Patch Through's.
+import music from '$lib/sounds/music.ogg';
 import sounds from '$lib/sounds/sfx.mp3';
 import { Howl } from 'howler/dist/howler.core.min';
 

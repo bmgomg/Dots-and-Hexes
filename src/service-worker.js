@@ -1,6 +1,6 @@
 // Offline play. The app is all client-side, so with its files cached it runs with no network at all.
 // - On install: every built file and every file in static/, except the music, into a cache per build.
-// - The music (8.5 MB) is cached the first time it is fetched, in a cache of its own that outlives
+// - The music (1.8 MB) is cached the first time it is fetched, in a cache of its own that outlives
 //   builds: its file name carries a content hash, so it is only fetched again when it changes.
 // - A new build's cache replaces the old one when it activates (SvelteKit registers this file;
 //   the itch.io build turns it off, see svelte.config.js).
@@ -9,7 +9,7 @@ import { build, files, version } from '$service-worker';
 const APP = `app-${version}`;
 const MEDIA = 'media';
 
-const isMedia = (path) => /\.mp3$/.test(path) && path.includes('music');
+const isMedia = (path) => /\.(mp3|ogg)$/.test(path) && path.includes('music');
 
 const media = build.filter(isMedia);
 const assets = [...build, ...files].filter((path) => !isMedia(path));

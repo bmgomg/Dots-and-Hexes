@@ -20,7 +20,7 @@ message band, prompts, toolbar (back, resign, reset stats, sfx, music).
 - Before the first line, tapping a player makes them go first. A robot made to go first waits for the Start prompt.
 - No hints. Selecting a dot previews its moves as dashed graphite lines.
 - Stats and the unfinished game are stored per mode (opponent, size, level). No undo, as in Triangula.
-- Sound effects and music are Triangula's (`src/lib/sounds`): taps, a pencil sound per player for each line, a chime
+- Sound effects are Triangula's and the music is Patch Through's (`src/lib/sounds`, `music.ogg`): taps, a pencil sound per player for each line, a chime
   per player for each claim, dice for a new game, a fast "won" chime (rate 2) when the game goes to single lines (its message is highlighted too), win / lose / draw
   chimes. The music starts at the launcher's play
   (the first tap that may start audio) and pauses while the window is in the background.
