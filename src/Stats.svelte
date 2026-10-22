@@ -37,7 +37,10 @@
 {/if}
 
 <style>
+	/* placed, not auto-placed: the launcher spans rows 1-3, and while it fades out an auto-placed
+	   row would be pushed below the grid and shift everything */
 	.stats {
+		grid-area: 1/1;
 		align-self: center;
 		grid: auto / auto 1fr auto;
 		padding: 0 20px;

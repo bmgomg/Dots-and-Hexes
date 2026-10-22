@@ -18,7 +18,9 @@
 {/if}
 
 <style>
+	/* placed, not auto-placed (see Stats) */
 	.scoreboard {
+		grid-area: 2/1;
 		width: 90%;
 		grid: auto / auto 1fr auto 1fr auto;
 		align-items: center;
