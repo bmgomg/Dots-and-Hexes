@@ -21,7 +21,7 @@ message band, prompts, toolbar (back, resign, reset stats, sfx, music).
 - No hints. Selecting a dot previews its moves as dashed graphite lines.
 - Stats and the unfinished game are stored per mode (opponent, size, level). No undo, as in Triangula.
 - Sound effects and music are Triangula's (`src/lib/sounds`): taps, a pencil sound per player for each line, a chime
-  per player for each claim, dice for a new game, a drop when the game goes to single lines (its message is highlighted too), win / lose / draw
+  per player for each claim, dice for a new game, a fast "won" chime (rate 2) when the game goes to single lines (its message is highlighted too), win / lose / draw
   chimes. The music starts at the launcher's play
   (the first tap that may start audio) and pauses while the window is in the background.
 

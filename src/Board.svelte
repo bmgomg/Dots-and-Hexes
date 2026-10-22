@@ -159,7 +159,7 @@
 		{/each}
 
 		{#each targets as t (t.other)}
-			<polyline class="preview" points={pts(t.move.path)} />
+			<polyline class="preview" points={pts(t.move.path)} in:fade={{ duration: 400 }} out:fade={{ duration: 150 }} />
 		{/each}
 
 		<!-- dots out of play (every line at them drawn) are half erased -->

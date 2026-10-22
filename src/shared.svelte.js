@@ -229,7 +229,7 @@ class Store {
 		} else if (!wasSingle && this.legal[0]?.single) {
 			this.message = MSG_SINGLES;
 			// a cue of its own, after the line's sounds
-			post(() => sfx('drop'), 500);
+			post(() => sfx('won', 2), 500);
 		}
 
 		this.persist();
