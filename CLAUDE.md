@@ -32,6 +32,9 @@ message band, prompts, toolbar (back, resign, reset stats, sfx, music).
   hard plus a perfect endgame (with `SOLVE_LINES` (20) or fewer lines left, an exact alpha-beta search).
 - `src/sound.svelte.js` — Triangula's sound module (Howler): `_sound` (`sfx`, `music` on/off, saved with the mode),
   `sfx(name)` from the sprite, `tap`, `plop`, `whoosh`, `playMusic`.
+- `src/service-worker.js` — offline play: every built and static file except the music is cached per build on
+  install; the music is cached the first time it is fetched, in a `media` cache that outlives builds. Pages go to
+  the network first, then the cache. Off in the itch.io build.
 - `src/shared.svelte.js` — the store `ss`: screens, mode, stats, game, robot turns, tap hit-testing, localStorage.
 - `src/Board.svelte` — the SVG board, in hex units. Lines are hand-drawn (each bows a little and runs past its
   dots, fixed per line); claimed hexes are colored-pencil scribbles; the last move is pressed hard (`--last`), except once the game is over; the
