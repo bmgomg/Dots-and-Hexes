@@ -65,7 +65,7 @@
 
 {#if ss.launcher}
 	<div class="launcher-page" in:fade={SCREEN_IN} out:fade={SCREEN_OUT}>
-		<Title />
+		<Title spacer />
 		<!-- an index card taped to the pad; the choices are circled in blue pencil -->
 		<div class="launcher card">
 			<div class="prompt">Select size</div>
@@ -104,9 +104,10 @@
 {/if}
 
 <style>
-	/* spans the empty stats and scoreboard rows too, so it centers between the top and the toolbar */
+	/* spans the empty stats and scoreboard rows too; the title's spacer is at the same height as on the home screen */
 	.launcher-page {
-		place-self: center;
+		place-self: start center;
+		padding-top: var(--title-top);
 		grid-area: 1/1/4/2;
 		display: grid;
 		justify-items: center;

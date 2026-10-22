@@ -3,6 +3,7 @@
 	import Frame from '../Frame.svelte';
 	import GamePage from '../Game Page.svelte';
 	import Home from '../Home.svelte';
+	import ScreenTitle from '../Screen Title.svelte';
 	import Splash from '../Splash.svelte';
 	import { DX, DY } from '../const';
 	import { ss } from '../shared.svelte';
@@ -68,6 +69,7 @@
 			<Frame />
 			<GamePage />
 			<Home />
+			<ScreenTitle />
 		</div>
 	{/if}
 </div>

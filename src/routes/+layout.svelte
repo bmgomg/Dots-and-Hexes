@@ -29,6 +29,7 @@
 			--card: #fdfdf8; /* index cards taped to the pad */
 			--tape: rgba(225, 222, 205, 0.75);
 			--desk: #4a3a2e; /* the walnut desk under the pad, and the browser's bars around it */
+			--title-top: 110px; /* where the title sits on both the home screen and the launcher */
 
 			background: var(--desk);
 			color: var(--ink);

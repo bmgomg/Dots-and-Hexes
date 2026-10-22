@@ -14,7 +14,7 @@
 
 {#if ss.home}
 	<div class="home ga11 nohi" in:fade={SCREEN_IN} out:fade={SCREEN_OUT}>
-		<Title />
+		<Title spacer />
 		<div class="tagline">Draw two. <span class="hl">Close a hex. Go again.</span></div>
 		{#snippet bullet(text, i)}
 			<div class="bullet-item">
@@ -46,7 +46,8 @@
 	.home {
 		display: grid;
 		z-index: 1;
-		place-content: center;
+		place-content: start center;
+		padding-top: var(--title-top);
 	}
 
 	.tagline {
