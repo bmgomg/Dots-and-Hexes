@@ -106,16 +106,18 @@
 <style>
 	/* spans the empty stats and scoreboard rows too; the title's spacer is at the same height as on the home screen */
 	.launcher-page {
-		place-self: start center;
+		place-self: stretch center;
 		padding-top: var(--title-top);
 		grid-area: 1/1/4/2;
 		display: grid;
+		grid-template-rows: auto 1fr;
 		justify-items: center;
-		gap: 30px;
 		z-index: 1;
 	}
 
+	/* centered between the title and the toolbar, whatever its height (the friend card is short) */
 	.launcher {
+		align-self: center;
 		display: grid;
 		justify-items: center;
 		gap: 14px;
