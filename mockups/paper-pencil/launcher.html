@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dots &amp; Hexes — Launcher</title>
+<link rel="stylesheet" href="paper.css">
+</head>
+<body>
+<!-- shared defs: the same block in every page (in the app: once, in +layout.svelte) -->
+<svg class="defs" aria-hidden="true">
+	<defs>
+		<filter id="pencil" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="9" result="n" /><feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" xChannelSelector="R" yChannelSelector="G" /></filter>
+		<filter id="crayon" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="2" seed="5" result="n" /><feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G" /></filter>
+		<filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="3" stitchTiles="stitch" /><feColorMatrix type="saturate" values="0" /><feComponentTransfer><feFuncA type="table" tableValues="0 0.06" /></feComponentTransfer></filter>
+		<pattern id="fill1" patternUnits="userSpaceOnUse" width="10" height="6" patternTransform="rotate(24)"><rect class="wash" width="10" height="6" /><path class="scribble" d="M0 5 L2.5 1 L5 5 L7.5 1 L10 5" /></pattern>
+		<pattern id="fill2" patternUnits="userSpaceOnUse" width="10" height="6" patternTransform="rotate(-24)"><rect class="wash" width="10" height="6" /><path class="scribble" d="M0 5 L2.5 1 L5 5 L7.5 1 L10 5" /></pattern>
+		<pattern id="fill3" patternUnits="userSpaceOnUse" width="10" height="6" patternTransform="rotate(-24)"><rect class="wash" width="10" height="6" /><path class="scribble" d="M0 5 L2.5 1 L5 5 L7.5 1 L10 5" /></pattern>
+		<symbol id="hex" viewBox="0 0 56 56"><polygon points="49.65,15.5 49.65,40.5 28,53 6.35,40.5 6.35,15.5 28,3" /></symbol>
+		<symbol id="bullet" viewBox="0 0 12 12"><polygon points="10.3,3.5 10.3,8.5 6,11 1.7,8.5 1.7,3.5 6,1" /></symbol>
+		<symbol id="underline2" viewBox="0 0 100 12" preserveAspectRatio="none"><path class="u1" d="M3 4 Q50 1 97 3" /><path class="u2" d="M10 10 Q52 7 90 9" /></symbol>
+		<symbol id="swoosh" viewBox="0 0 56 10"><path d="M4 6 Q20 2 30 5 T53 3" /></symbol>
+	</defs>
+</svg>
+
+<!-- the game page with the launcher up: stats and scoreboard rows are empty -->
+<main class="screen paper game">
+	<svg class="grain" aria-hidden="true"><rect width="100%" height="100%" filter="url(#grain)" /></svg>
+
+	<div class="launcher card">
+		<h2>SELECT SIZE</h2>
+		<div class="row">
+			<button class="size" type="button">7</button>
+			<button class="size selected" type="button" aria-pressed="true">13</button>
+			<button class="size" type="button">19</button>
+		</div>
+
+		<h2>SELECT OPPONENT</h2>
+		<div class="row">
+			<button class="skill" type="button">
+				<svg viewBox="0 0 56 56" aria-hidden="true"><use class="hex p2" href="#hex" /><circle class="pip" cx="28" cy="28" r="3.4" /></svg>
+				<span>easy</span>
+			</button>
+			<button class="skill" type="button">
+				<svg viewBox="0 0 56 56" aria-hidden="true"><use class="hex p2" href="#hex" /><circle class="pip" cx="22.75" cy="28" r="3.4" /><circle class="pip" cx="33.25" cy="28" r="3.4" /></svg>
+				<span>not easy</span>
+			</button>
+			<button class="skill selected" type="button" aria-pressed="true">
+				<svg viewBox="0 0 56 56" aria-hidden="true"><use class="hex p2" href="#hex" /><circle class="pip" cx="17.5" cy="28" r="3.4" /><circle class="pip" cx="28" cy="28" r="3.4" /><circle class="pip" cx="38.5" cy="28" r="3.4" /></svg>
+				<span>harder</span>
+			</button>
+			<button class="skill" type="button">
+				<svg viewBox="0 0 56 56" aria-hidden="true"><use class="hex p2" href="#hex" /><circle class="pip" cx="12.25" cy="28" r="3.4" /><circle class="pip" cx="22.75" cy="28" r="3.4" /><circle class="pip" cx="33.25" cy="28" r="3.4" /><circle class="pip" cx="43.75" cy="28" r="3.4" /></svg>
+				<span>really hard</span>
+			</button>
+		</div>
+
+		<button class="play" type="button">Play<svg class="underline" viewBox="0 0 100 12" preserveAspectRatio="none" aria-hidden="true"><use href="#underline2" width="100" height="12" /></svg></button>
+	</div>
+
+	<nav class="toolbar" aria-label="Toolbar">
+		<button class="btn" type="button">back</button>
+		<button class="btn" type="button" disabled>resign</button>
+		<button class="btn" type="button" disabled>reset stats</button>
+		<button class="btn" type="button">hints off</button>
+	</nav>
+</main>
+</body>
+</html>

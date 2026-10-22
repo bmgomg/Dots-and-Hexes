@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dots &amp; Hexes — Game over</title>
+<link rel="stylesheet" href="paper.css">
+</head>
+<body>
+<!-- shared defs: the same block in every page (in the app: once, in +layout.svelte) -->
+<svg class="defs" aria-hidden="true">
+	<defs>
+		<filter id="pencil" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="9" result="n" /><feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" xChannelSelector="R" yChannelSelector="G" /></filter>
+		<filter id="crayon" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="2" seed="5" result="n" /><feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G" /></filter>
+		<filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="3" stitchTiles="stitch" /><feColorMatrix type="saturate" values="0" /><feComponentTransfer><feFuncA type="table" tableValues="0 0.06" /></feComponentTransfer></filter>
+		<pattern id="fill1" patternUnits="userSpaceOnUse" width="10" height="6" patternTransform="rotate(24)"><rect class="wash" width="10" height="6" /><path class="scribble" d="M0 5 L2.5 1 L5 5 L7.5 1 L10 5" /></pattern>
+		<pattern id="fill2" patternUnits="userSpaceOnUse" width="10" height="6" patternTransform="rotate(-24)"><rect class="wash" width="10" height="6" /><path class="scribble" d="M0 5 L2.5 1 L5 5 L7.5 1 L10 5" /></pattern>
+		<pattern id="fill3" patternUnits="userSpaceOnUse" width="10" height="6" patternTransform="rotate(-24)"><rect class="wash" width="10" height="6" /><path class="scribble" d="M0 5 L2.5 1 L5 5 L7.5 1 L10 5" /></pattern>
+		<symbol id="hex" viewBox="0 0 56 56"><polygon points="49.65,15.5 49.65,40.5 28,53 6.35,40.5 6.35,15.5 28,3" /></symbol>
+		<symbol id="bullet" viewBox="0 0 12 12"><polygon points="10.3,3.5 10.3,8.5 6,11 1.7,8.5 1.7,3.5 6,1" /></symbol>
+		<symbol id="underline2" viewBox="0 0 100 12" preserveAspectRatio="none"><path class="u1" d="M3 4 Q50 1 97 3" /><path class="u2" d="M10 10 Q52 7 90 9" /></symbol>
+		<symbol id="swoosh" viewBox="0 0 56 10"><path d="M4 6 Q20 2 30 5 T53 3" /></symbol>
+	</defs>
+</svg>
+
+<main class="screen paper game">
+	<svg class="grain" aria-hidden="true"><rect width="100%" height="100%" filter="url(#grain)" /></svg>
+
+	<header class="stats">
+		<div class="stat"><span>WINS</span><span class="val p1">6</span></div>
+		<div class="mid">
+			<div class="stat"><span>PLAYS</span><span class="val">10</span></div>
+			<div class="stat"><span>AVE</span><span class="val">7</span></div>
+		</div>
+		<div class="stat"><span class="val p2">3</span><span>WINS</span></div>
+	</header>
+
+	<div class="scoreboard">
+		<div class="avatar">
+			<svg class="hexicon" viewBox="0 0 56 56" role="img" aria-label="You, winner"><use class="hex p1" href="#hex" /></svg>
+			<svg class="swoosh" aria-hidden="true"><use href="#swoosh" /></svg>
+		</div>
+		<div class="score p1">8</div>
+		<svg class="pie" viewBox="0 0 52 52" role="img" aria-label="8 of 13 hexes yours, 5 the robot's">
+			<path class="p1" d="M26 26 L26 4 A22 22 0 1 1 11.4 42.5 Z" />
+			<path class="p2" d="M26 26 L26 4 A22 22 0 0 0 11.4 42.5 Z" />
+			<circle cx="26" cy="26" r="22" />
+		</svg>
+		<div class="score p2">5</div>
+		<div class="avatar lost">
+			<svg class="hexicon" viewBox="0 0 56 56" role="img" aria-label="Robot, harder, lost"><use class="hex p2" href="#hex" /><circle class="pip" cx="17.5" cy="28" r="3" /><circle class="pip" cx="28" cy="28" r="3" /><circle class="pip" cx="38.5" cy="28" r="3" /></svg>
+			<div class="level">HARDER</div>
+		</div>
+	</div>
+
+	<svg class="board" viewBox="0 0 380 434" width="380" height="434" role="img" aria-label="Board, every hex claimed, 8 to 5">
+		<g class="hexes">
+			<polygon class="hex p1" points="102,268 102,318.8 58,344.2 14,318.8 14,268 58,242.6" />
+			<polygon class="hex p1" points="190,268 190,318.8 146,344.2 102,318.8 102,268 146,242.6" />
+			<polygon class="hex p1" points="234,191.8 234,242.6 190,268 146,242.6 146,191.8 190,166.4" />
+			<polygon class="hex p1" points="278,268 278,318.8 234,344.2 190,318.8 190,268 234,242.6" />
+			<polygon class="hex p1" points="234,39.4 234,90.2 190,115.6 146,90.2 146,39.4 190,14" />
+			<polygon class="hex p1" points="278,115.6 278,166.4 234,191.8 190,166.4 190,115.6 234,90.2" />
+			<polygon class="hex p1" points="366,115.6 366,166.4 322,191.8 278,166.4 278,115.6 322,90.2" />
+			<polygon class="hex p1" points="234,344.2 234,395.1 190,420.5 146,395.1 146,344.2 190,318.8" />
+			<polygon class="hex p2" points="102,115.6 102,166.4 58,191.8 14,166.4 14,115.6 58,90.2" />
+			<polygon class="hex p2" points="146,191.8 146,242.6 102,268 58,242.6 58,191.8 102,166.4" />
+			<polygon class="hex p2" points="190,115.6 190,166.4 146,191.8 102,166.4 102,115.6 146,90.2" />
+			<polygon class="hex p2" points="322,191.8 322,242.6 278,268 234,242.6 234,191.8 278,166.4" />
+			<polygon class="hex p2" points="366,268 366,318.8 322,344.2 278,318.8 278,268 322,242.6" />
+		</g>
+
+		<!-- every line drawn, every dot out of play (dots omitted: all erased) -->
+		<g class="pencil">
+			<path class="edge" d="M102.2 268.6Q102.6 294.8 101.8 321.4M103.8 317.7Q80.0 331.0 56.9 345.0M59.8 345.3Q37.1 332.1 13.9 319.0M14.4 321.5Q14.4 293.8 13.9 266.3M12.2 268.8Q34.8 255.2 58.9 242.4M103.5 268.9Q79.1 255.8 56.1 241.3M102.2 113.8Q102.4 139.7 102.0 165.8M102.5 166.1Q80.4 179.2 57.8 191.7M60.1 192.9Q37.1 179.1 13.2 166.2M14.1 168.6Q14.6 141.8 13.8 114.8M11.9 116.5Q35.5 103.7 59.5 88.7M104.1 117.0Q81.2 104.4 57.5 90.6M146.3 189.4Q144.8 217.2 145.5 244.6M102.5 267.9Q124.1 254.7 145.8 242.6M57.6 244.8Q57.6 218.2 57.5 192.0M100.5 166.2Q125.1 180.4 148.0 193.1M189.6 268.0Q190.9 293.4 190.2 319.2M100.8 318.5Q124.0 332.3 146.0 343.6M144.4 241.5Q167.2 256.5 191.6 269.3M234.4 342.2Q234.8 368.9 233.9 395.9M235.2 394.0Q212.2 407.7 190.0 421.2M191.4 420.8Q168.3 408.4 144.2 394.1M188.4 317.6Q212.3 330.9 236.2 345.4M190.3 114.0Q189.2 140.9 189.8 167.5M146.1 191.8Q168.4 178.0 191.0 165.9M100.8 116.1Q124.7 103.3 148.2 89.2M191.0 116.1Q167.1 103.7 143.7 88.6M233.7 190.7Q234.9 217.7 233.7 244.9M187.7 269.2Q211.5 256.5 234.2 242.0M188.3 165.1Q212.7 180.4 235.8 193.1M278.1 268.0Q278.7 293.3 278.5 318.2M233.3 344.2Q255.1 330.3 278.1 319.0M232.9 242.0Q256.1 256.2 279.7 269.0M234.1 39.1Q234.0 64.9 234.2 91.1M188.5 116.4Q212.7 104.1 236.3 89.6M146.2 91.0Q145.5 65.2 146.5 40.0M146.3 39.8Q168.5 25.6 190.3 14.1M235.3 39.7Q212.7 26.6 189.5 13.5M278.4 115.3Q277.7 140.7 277.8 166.7M231.7 192.5Q254.7 180.8 277.8 166.0M233.1 89.6Q256.8 102.3 279.6 116.3M322.3 190.1Q321.1 216.3 321.8 242.4M276.2 269.5Q299.6 256.4 323.1 241.7M278.1 166.3Q301.2 179.8 323.3 192.6M366.2 266.0Q364.8 292.6 366.3 319.2M368.0 317.8Q344.3 331.0 322.5 344.4M276.8 317.7Q299.7 330.9 323.6 345.8M320.4 241.8Q343.5 254.0 366.2 267.6M365.6 115.3Q366.1 140.8 366.0 165.7M322.3 192.0Q343.4 179.5 365.9 166.6M276.9 116.9Q299.8 104.4 322.8 90.0M367.8 116.5Q344.2 102.8 322.0 90.1" />
+			<path class="edge last" d="M145.9 343.1Q147.3 369.1 145.7 395.1M190.3 318.4Q168.8 330.6 146.6 343.9" />
+		</g>
+	</svg>
+
+	<div class="message">
+		<div class="text">you won!</div>
+		<svg class="underline" viewBox="0 0 100 12" preserveAspectRatio="none" aria-hidden="true"><use href="#underline2" width="100" height="12" /></svg>
+	</div>
+
+	<div class="prompt card">
+		<button class="btn big" type="button">Play again?</button>
+	</div>
+
+	<nav class="toolbar" aria-label="Toolbar">
+		<button class="btn" type="button">back</button>
+		<button class="btn" type="button" disabled>resign</button>
+		<button class="btn" type="button">reset stats</button>
+		<button class="btn" type="button">hints off</button>
+	</nav>
+</main>
+</body>
+</html>

@@ -10,7 +10,7 @@ export const MSG_START_TIP = 'tip: tap a player to make them go first';
 export const MSG_SINGLES = 'one line at a time now';
 export const LEVELS = ['easy', 'medium', 'hard', 'killer'];
 // what the player sees; the ids above stay as stored in saved modes
-export const LEVEL_NAMES = { easy: 'easy', medium: 'not easy', hard: 'harder', killer: 'really hard' };
+export const LEVEL_NAMES = { easy: 'easy', medium: 'not so easy', hard: 'even harder', killer: 'really hard' };
 export const ROBOT = 'robot';
 export const HUMAN = 'human';
 export const WINNER_DRAW = 3;

@@ -1,0 +1,635 @@
+/*
+ * Dots & Hexes — "Graph pad + colored pencil" theme.
+ *
+ * Tokens first; the names follow +layout.svelte where there is a match
+ * (--bg, --ink, --gold, --p1, --p2). Every page also needs the SVG <defs>
+ * block (filters, fill patterns, symbols) — in the app, put it once in +layout.svelte.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap');
+
+:root {
+	--bg: #f1f5ea; /* graph-pad paper */
+	--grid-major: #c3d6b3; /* every 50px */
+	--grid-minor: #dde8d3; /* every 10px */
+	--ink: #2f2f34; /* graphite: text, dots */
+	--ink-soft: #55555b; /* labels */
+	--line: #4a4a50; /* drawn lines */
+	--last: #1a1a1e; /* last move, pressed hard (was --orange) */
+	--p1: #2a63c4; /* blue pencil */
+	--p2: #e07a1f; /* orange pencil, strokes and fills */
+	--p2-text: #b85d0c; /* orange dark enough for text */
+	--friend: #d6a400; /* yellow pencil, "play with friend" */
+	--gold: rgba(255, 216, 58, 0.62); /* highlighter: hints, key words, "on" */
+	--card: #fdfdf8;
+	--tape: rgba(225, 222, 205, 0.75);
+	--font: 'Architects Daughter', 'Comic Sans MS', cursive;
+}
+
+/* ---------- page ---------- */
+
+body {
+	margin: 0;
+	min-height: 100vh;
+	display: grid;
+	place-items: center;
+	background: #d9dccf;
+}
+
+.screen {
+	position: relative;
+	width: 450px;
+	height: 800px;
+	overflow: hidden;
+	font-family: var(--font);
+	color: var(--ink);
+}
+
+.paper {
+	background-color: var(--bg);
+	background-image:
+		linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
+		linear-gradient(180deg, var(--grid-major) 1px, transparent 1px),
+		linear-gradient(90deg, var(--grid-minor) 1px, transparent 1px),
+		linear-gradient(180deg, var(--grid-minor) 1px, transparent 1px);
+	background-size:
+		50px 50px,
+		50px 50px,
+		10px 10px,
+		10px 10px;
+}
+
+/* paper grain, an <svg class="grain"> laid over everything */
+.grain {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	z-index: 2;
+}
+
+.defs {
+	position: absolute;
+	width: 0;
+	height: 0;
+}
+
+/* ---------- shared bits ---------- */
+
+.p1 {
+	color: var(--p1);
+}
+
+.p2 {
+	color: var(--p2-text);
+}
+
+.hl {
+	background: linear-gradient(180deg, transparent 34%, var(--gold) 34%, var(--gold) 82%, transparent 82%);
+	box-decoration-break: clone;
+	-webkit-box-decoration-break: clone;
+}
+
+.pencil {
+	filter: url(#pencil);
+}
+
+.btn {
+	min-height: 44px;
+	padding: 0 11px;
+	border: 0;
+	background: transparent;
+	font: inherit;
+	font-size: 17px;
+	color: var(--ink);
+	cursor: pointer;
+}
+
+.btn:disabled {
+	opacity: 0.3;
+	cursor: default;
+}
+
+.btn.on {
+	background: linear-gradient(180deg, transparent 30%, var(--gold) 30%, var(--gold) 72%, transparent 72%);
+}
+
+.btn.big {
+	min-height: 56px;
+	padding: 0 18px;
+	font-size: 30px;
+}
+
+/* a white index card taped to the pad */
+.card {
+	position: relative;
+	background: var(--card);
+	box-shadow:
+		0 1px 1px rgba(0, 0, 0, 0.08),
+		0 10px 18px -8px rgba(30, 50, 20, 0.38);
+}
+
+.card::before {
+	content: '';
+	position: absolute;
+	top: -13px;
+	left: calc(50% - 45px);
+	width: 90px;
+	height: 26px;
+	background: var(--tape);
+	transform: rotate(3deg);
+}
+
+/* two pencil strokes, blue over orange: <svg class="underline"><use href="#underline2"/></svg> */
+.underline {
+	display: block;
+	width: 100px;
+	height: 12px;
+	overflow: visible;
+	filter: url(#pencil);
+}
+
+.u1,
+.u2 {
+	fill: none;
+	stroke-linecap: round;
+	vector-effect: non-scaling-stroke;
+}
+
+.u1 {
+	stroke: var(--p1);
+	stroke-width: 2.2;
+}
+
+.u2 {
+	stroke: var(--p2);
+	stroke-width: 2;
+}
+
+/* ---------- hexagons (avatars, icons, board) ---------- */
+
+.hex {
+	stroke-width: 2;
+	stroke-linejoin: round;
+	filter: url(#crayon);
+}
+
+.hex.p1 {
+	fill: url(#fill1);
+	stroke: var(--p1);
+}
+
+.hex.p2 {
+	fill: url(#fill2);
+	stroke: var(--p2);
+}
+
+.hex.friend {
+	fill: url(#fill3);
+	stroke: var(--friend);
+}
+
+/* hides the hexagon behind a front one */
+.hex-bg {
+	fill: var(--bg);
+}
+
+.pip {
+	fill: var(--ink);
+}
+
+/* pattern content: currentColor comes from the pattern's class */
+#fill1 {
+	color: var(--p1);
+}
+
+#fill2 {
+	color: var(--p2);
+}
+
+#fill3 {
+	color: var(--friend);
+}
+
+.wash {
+	fill: currentColor;
+	fill-opacity: 0.22;
+}
+
+.scribble {
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.6;
+	stroke-linejoin: round;
+	opacity: 0.65;
+}
+
+/* ---------- home ---------- */
+
+.home {
+	box-sizing: border-box;
+	padding: 62px 30px 0 32px;
+	display: flex;
+	flex-direction: column;
+}
+
+.title {
+	align-self: center;
+	margin: 0;
+	font-weight: 400;
+	font-size: 54px;
+	line-height: 1.1;
+	letter-spacing: 0.02em;
+	transform: rotate(-1.5deg);
+}
+
+.title .p2 {
+	color: #c4650f;
+}
+
+.home .underline {
+	align-self: center;
+	width: 300px;
+	margin-top: 2px;
+}
+
+.tagline {
+	align-self: center;
+	margin: 16px 0 0;
+	font-size: 19px;
+}
+
+.rules {
+	margin: 34px 0 0;
+	padding: 0;
+	list-style: none;
+	display: grid;
+	gap: 14px;
+	font-size: 17px;
+	line-height: 25px;
+}
+
+.rules li {
+	display: grid;
+	grid: auto / 12px 1fr;
+	gap: 12px;
+}
+
+.bullet {
+	width: 12px;
+	height: 12px;
+	margin-top: 9px;
+}
+
+.bullet use {
+	fill: currentColor;
+	opacity: 0.75;
+}
+
+.bullet.p2 {
+	color: var(--p2);
+}
+
+.ops {
+	margin-top: 44px;
+	display: flex;
+	justify-content: center;
+	gap: 34px;
+}
+
+.op {
+	display: grid;
+	justify-items: center;
+	gap: 6px;
+	padding: 8px 10px;
+	border: 0;
+	background: transparent;
+	font: inherit;
+	font-size: 18px;
+	color: var(--ink);
+	cursor: pointer;
+}
+
+.op svg {
+	width: 80px;
+	height: 64px;
+}
+
+/* ---------- game page: stats, scoreboard, board row, toolbar ---------- */
+
+.game {
+	display: grid;
+	grid-template-rows: 50px 76px 1fr auto;
+}
+
+.stats {
+	box-sizing: border-box;
+	padding: 0 30px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	font-size: 14px;
+	color: var(--ink-soft);
+}
+
+.stat {
+	display: flex;
+	align-items: baseline;
+	gap: 8px;
+}
+
+.stats .mid {
+	display: flex;
+	gap: 22px;
+}
+
+.val {
+	font-size: 22px;
+	color: var(--ink);
+}
+
+.val.p1 {
+	color: var(--p1);
+}
+
+.val.p2 {
+	color: var(--p2-text);
+}
+
+.scoreboard {
+	justify-self: center;
+	width: 90%;
+	display: grid;
+	grid: auto / 70px 1fr auto 1fr 70px;
+	align-items: center;
+}
+
+.avatar {
+	display: grid;
+	justify-items: center;
+}
+
+.avatar .hexicon {
+	width: 56px;
+	height: 56px;
+}
+
+.avatar.lost {
+	opacity: 0.35;
+}
+
+/* a pencil swoosh under whoever moves */
+.swoosh {
+	width: 56px;
+	height: 10px;
+	visibility: hidden;
+	filter: url(#pencil);
+}
+
+.turn .swoosh {
+	visibility: visible;
+}
+
+.swoosh use {
+	fill: none;
+	stroke: var(--ink);
+	stroke-width: 2;
+	stroke-linecap: round;
+}
+
+.level {
+	font-size: 13px;
+	letter-spacing: 0.06em;
+	color: var(--ink-soft);
+}
+
+.score {
+	text-align: center;
+	font-size: 40px;
+}
+
+.pie {
+	width: 52px;
+	height: 52px;
+	filter: url(#crayon);
+}
+
+.pie .p1 {
+	fill: url(#fill1);
+	stroke: var(--p1);
+}
+
+.pie .p2 {
+	fill: url(#fill2);
+	stroke: var(--p2);
+}
+
+.pie path {
+	stroke-width: 1.4;
+	stroke-linejoin: round;
+}
+
+.pie circle {
+	fill: none;
+	stroke: var(--ink);
+	stroke-width: 1.6;
+}
+
+.toolbar {
+	grid-row: 4;
+	display: flex;
+	justify-content: center;
+	gap: 4px;
+	margin-bottom: 14px;
+}
+
+/* everything in the board row shares grid-area 3/1, as in the app */
+.board,
+.message,
+.prompt,
+.launcher {
+	grid-area: 3/1;
+}
+
+.board {
+	place-self: center;
+	overflow: visible;
+}
+
+.board .hex {
+	stroke: none;
+}
+
+.hexes {
+	filter: url(#crayon);
+}
+
+.hexes .hex {
+	filter: none;
+}
+
+.edge {
+	fill: none;
+	stroke: var(--line);
+	stroke-width: 2;
+	stroke-linecap: round;
+	opacity: 0.9;
+}
+
+.edge.last {
+	stroke: var(--last);
+	stroke-width: 3.4;
+	opacity: 1;
+}
+
+/* moves that would close a hex: a highlighter stroke under the paths */
+.hint {
+	fill: none;
+	stroke: var(--gold);
+	stroke-width: 9;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+/* the selected dot's moves, dashed (not shown in these pages) */
+.preview {
+	fill: none;
+	stroke: #5b5b62;
+	stroke-width: 2;
+	stroke-dasharray: 5 6;
+	stroke-linecap: round;
+}
+
+.dot {
+	fill: var(--ink);
+}
+
+/* can't be tapped right now */
+.dot.gray {
+	fill: #9c9ca2;
+}
+
+/* out of play: half erased */
+.dot.dead {
+	opacity: 0.13;
+}
+
+.message {
+	place-self: start center;
+	margin-top: 16px;
+	display: grid;
+	justify-items: center;
+}
+
+.message .text {
+	font-size: 34px;
+	line-height: 1.1;
+	transform: rotate(-2deg);
+}
+
+.message .underline {
+	width: 150px;
+}
+
+.prompt {
+	place-self: center;
+	padding: 9px 6px;
+	transform: rotate(1.5deg);
+}
+
+/* ---------- launcher ---------- */
+
+.launcher {
+	place-self: center;
+	width: 370px;
+	box-sizing: border-box;
+	padding: 34px 22px 26px;
+	display: grid;
+	justify-items: center;
+	gap: 14px;
+	transform: rotate(-1.2deg);
+}
+
+.launcher h2 {
+	justify-self: start;
+	margin: 0;
+	font-weight: 400;
+	font-size: 16px;
+	letter-spacing: 0.12em;
+	color: var(--ink-soft);
+}
+
+.launcher h2 + .row + h2 {
+	margin-top: 10px;
+}
+
+.launcher .row {
+	display: flex;
+	gap: 6px;
+}
+
+.size,
+.skill {
+	position: relative;
+	border: 0;
+	background: transparent;
+	font: inherit;
+	color: var(--ink);
+	opacity: 0.5;
+	cursor: pointer;
+}
+
+.size {
+	width: 64px;
+	height: 56px;
+	margin: 0 9px;
+	font-size: 32px;
+}
+
+.skill {
+	width: 78px;
+	height: 92px;
+	padding: 6px 0 0;
+	display: grid;
+	justify-items: center;
+	align-content: start;
+	gap: 4px;
+	font-size: 14px;
+}
+
+.skill svg {
+	width: 46px;
+	height: 46px;
+}
+
+.size:hover,
+.skill:hover,
+.selected {
+	opacity: 1;
+}
+
+/* a loose loop in blue pencil around the choice */
+.selected::after {
+	content: '';
+	position: absolute;
+	inset: -2px;
+	border: 2.2px solid var(--p1);
+	border-radius: 52% 46% 55% 44% / 48% 55% 45% 52%;
+	transform: rotate(-6deg);
+	filter: url(#pencil);
+	pointer-events: none;
+}
+
+.play {
+	margin-top: 14px;
+	padding: 0 16px 6px;
+	border: 0;
+	background: transparent;
+	display: grid;
+	justify-items: center;
+	font: inherit;
+	font-size: 38px;
+	line-height: 1.1;
+	color: var(--ink);
+	cursor: pointer;
+}

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dots &amp; Hexes — Home</title>
+<link rel="stylesheet" href="paper.css">
+</head>
+<body>
+<!-- shared defs: the same block in every page (in the app: once, in +layout.svelte) -->
+<svg class="defs" aria-hidden="true">
+	<defs>
+		<filter id="pencil" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="9" result="n" /><feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" xChannelSelector="R" yChannelSelector="G" /></filter>
+		<filter id="crayon" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="2" seed="5" result="n" /><feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G" /></filter>
+		<filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="3" stitchTiles="stitch" /><feColorMatrix type="saturate" values="0" /><feComponentTransfer><feFuncA type="table" tableValues="0 0.06" /></feComponentTransfer></filter>
+		<pattern id="fill1" patternUnits="userSpaceOnUse" width="10" height="6" patternTransform="rotate(24)"><rect class="wash" width="10" height="6" /><path class="scribble" d="M0 5 L2.5 1 L5 5 L7.5 1 L10 5" /></pattern>
+		<pattern id="fill2" patternUnits="userSpaceOnUse" width="10" height="6" patternTransform="rotate(-24)"><rect class="wash" width="10" height="6" /><path class="scribble" d="M0 5 L2.5 1 L5 5 L7.5 1 L10 5" /></pattern>
+		<pattern id="fill3" patternUnits="userSpaceOnUse" width="10" height="6" patternTransform="rotate(-24)"><rect class="wash" width="10" height="6" /><path class="scribble" d="M0 5 L2.5 1 L5 5 L7.5 1 L10 5" /></pattern>
+		<symbol id="hex" viewBox="0 0 56 56"><polygon points="49.65,15.5 49.65,40.5 28,53 6.35,40.5 6.35,15.5 28,3" /></symbol>
+		<symbol id="bullet" viewBox="0 0 12 12"><polygon points="10.3,3.5 10.3,8.5 6,11 1.7,8.5 1.7,3.5 6,1" /></symbol>
+		<symbol id="underline2" viewBox="0 0 100 12" preserveAspectRatio="none"><path class="u1" d="M3 4 Q50 1 97 3" /><path class="u2" d="M10 10 Q52 7 90 9" /></symbol>
+		<symbol id="swoosh" viewBox="0 0 56 10"><path d="M4 6 Q20 2 30 5 T53 3" /></symbol>
+	</defs>
+</svg>
+
+<main class="screen paper home">
+	<svg class="grain" aria-hidden="true"><rect width="100%" height="100%" filter="url(#grain)" /></svg>
+
+	<h1 class="title"><span class="p1">Dots</span> &amp; <span class="p2">Hexes</span></h1>
+	<svg class="underline" viewBox="0 0 100 12" preserveAspectRatio="none" aria-hidden="true"><use href="#underline2" width="100" height="12" /></svg>
+	<p class="tagline">Draw two. <span class="hl">Close a hex. Go again.</span></p>
+
+	<ul class="rules">
+		<li><svg class="bullet p1" aria-hidden="true"><use href="#bullet" /></svg><span>Take turns <span class="hl">tapping two dots</span> two steps apart. Both lines between them get drawn.</span></li>
+		<li><svg class="bullet p2" aria-hidden="true"><use href="#bullet" /></svg><span>After the opening move, the path must <span class="hl">touch an existing line</span>, at either end or in the middle.</span></li>
+		<li><svg class="bullet p1" aria-hidden="true"><use href="#bullet" /></svg><span>Close a hex to claim it, then <span class="hl">move again</span>.</span></li>
+		<li><svg class="bullet p2" aria-hidden="true"><use href="#bullet" /></svg><span>When no two-line move is left, draw <span class="hl">one line at a time</span>. Then you move again only if your line closes two hexes at once.</span></li>
+		<li><svg class="bullet p1" aria-hidden="true"><use href="#bullet" /></svg><span>When every line is drawn, the <span class="hl">most hexes</span> win.</span></li>
+	</ul>
+
+	<div class="ops">
+		<!-- you in front, your opponent behind: yellow for a friend, orange for the robot -->
+		<button class="op" type="button">
+			<svg viewBox="0 0 80 64" aria-hidden="true">
+				<use class="hex friend" href="#hex" x="24" y="0" width="52" height="52" />
+				<use class="hex-bg" href="#hex" x="4" y="12" width="52" height="52" />
+				<use class="hex p1" href="#hex" x="4" y="12" width="52" height="52" />
+			</svg>
+			<span>play with friend</span>
+		</button>
+		<button class="op" type="button">
+			<svg viewBox="0 0 80 64" aria-hidden="true">
+				<use class="hex p2" href="#hex" x="24" y="0" width="52" height="52" />
+				<use class="hex-bg" href="#hex" x="4" y="12" width="52" height="52" />
+				<use class="hex p1" href="#hex" x="4" y="12" width="52" height="52" />
+			</svg>
+			<span>play against ai</span>
+		</button>
+	</div>
+</main>
+</body>
+</html>

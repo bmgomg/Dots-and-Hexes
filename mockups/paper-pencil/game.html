@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dots &amp; Hexes — Game</title>
+<link rel="stylesheet" href="paper.css">
+</head>
+<body>
+<!-- shared defs: the same block in every page (in the app: once, in +layout.svelte) -->
+<svg class="defs" aria-hidden="true">
+	<defs>
+		<filter id="pencil" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="9" result="n" /><feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" xChannelSelector="R" yChannelSelector="G" /></filter>
+		<filter id="crayon" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="2" seed="5" result="n" /><feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G" /></filter>
+		<filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="3" stitchTiles="stitch" /><feColorMatrix type="saturate" values="0" /><feComponentTransfer><feFuncA type="table" tableValues="0 0.06" /></feComponentTransfer></filter>
+		<pattern id="fill1" patternUnits="userSpaceOnUse" width="10" height="6" patternTransform="rotate(24)"><rect class="wash" width="10" height="6" /><path class="scribble" d="M0 5 L2.5 1 L5 5 L7.5 1 L10 5" /></pattern>
+		<pattern id="fill2" patternUnits="userSpaceOnUse" width="10" height="6" patternTransform="rotate(-24)"><rect class="wash" width="10" height="6" /><path class="scribble" d="M0 5 L2.5 1 L5 5 L7.5 1 L10 5" /></pattern>
+		<pattern id="fill3" patternUnits="userSpaceOnUse" width="10" height="6" patternTransform="rotate(-24)"><rect class="wash" width="10" height="6" /><path class="scribble" d="M0 5 L2.5 1 L5 5 L7.5 1 L10 5" /></pattern>
+		<symbol id="hex" viewBox="0 0 56 56"><polygon points="49.65,15.5 49.65,40.5 28,53 6.35,40.5 6.35,15.5 28,3" /></symbol>
+		<symbol id="bullet" viewBox="0 0 12 12"><polygon points="10.3,3.5 10.3,8.5 6,11 1.7,8.5 1.7,3.5 6,1" /></symbol>
+		<symbol id="underline2" viewBox="0 0 100 12" preserveAspectRatio="none"><path class="u1" d="M3 4 Q50 1 97 3" /><path class="u2" d="M10 10 Q52 7 90 9" /></symbol>
+		<symbol id="swoosh" viewBox="0 0 56 10"><path d="M4 6 Q20 2 30 5 T53 3" /></symbol>
+	</defs>
+</svg>
+
+<main class="screen paper game">
+	<svg class="grain" aria-hidden="true"><rect width="100%" height="100%" filter="url(#grain)" /></svg>
+
+	<header class="stats">
+		<div class="stat"><span>WINS</span><span class="val p1">5</span></div>
+		<div class="mid">
+			<div class="stat"><span>PLAYS</span><span class="val">9</span></div>
+			<div class="stat"><span>AVE</span><span class="val">7</span></div>
+		</div>
+		<div class="stat"><span class="val p2">3</span><span>WINS</span></div>
+	</header>
+
+	<div class="scoreboard">
+		<div class="avatar turn">
+			<svg class="hexicon" viewBox="0 0 56 56" role="img" aria-label="You"><use class="hex p1" href="#hex" /></svg>
+			<svg class="swoosh" aria-hidden="true"><use href="#swoosh" /></svg>
+		</div>
+		<div class="score p1">3</div>
+		<svg class="pie" viewBox="0 0 52 52" role="img" aria-label="3 of 13 hexes yours, 2 the robot's">
+			<path class="p1" d="M26 26 L26 4 A22 22 0 0 1 47.8 23.4 Z" />
+			<path class="p2" d="M26 26 L26 4 A22 22 0 0 0 7.9 13.5 Z" />
+			<circle cx="26" cy="26" r="22" />
+		</svg>
+		<div class="score p2">2</div>
+		<div class="avatar">
+			<svg class="hexicon" viewBox="0 0 56 56" role="img" aria-label="Robot, harder"><use class="hex p2" href="#hex" /><circle class="pip" cx="17.5" cy="28" r="3" /><circle class="pip" cx="28" cy="28" r="3" /><circle class="pip" cx="38.5" cy="28" r="3" /></svg>
+			<div class="level">HARDER</div>
+		</div>
+	</div>
+
+	<svg class="board" viewBox="0 0 380 434" width="380" height="434" role="img" aria-label="Board, 13 hexes, hints on">
+		<!-- hints: moves that would close a hex -->
+		<polyline class="hint" points="366,318.8 322,344.2 278,318.8" />
+		<polyline class="hint" points="366,115.6 366,166.4 322,191.8" />
+
+		<g class="hexes">
+			<polygon class="hex p2" points="146,191.8 146,242.6 102,268 58,242.6 58,191.8 102,166.4" />
+			<polygon class="hex p2" points="322,191.8 322,242.6 278,268 234,242.6 234,191.8 278,166.4" />
+			<polygon class="hex p1" points="234,191.8 234,242.6 190,268 146,242.6 146,191.8 190,166.4" />
+			<polygon class="hex p1" points="278,268 278,318.8 234,344.2 190,318.8 190,268 234,242.6" />
+			<polygon class="hex p1" points="278,115.6 278,166.4 234,191.8 190,166.4 190,115.6 234,90.2" />
+		</g>
+
+		<g class="pencil">
+			<!-- drawn lines, each a slightly bowed stroke that runs past its dots -->
+			<path class="edge" d="M102.2 268.6Q102.6 294.8 101.8 321.4M103.8 268.7Q80.6 255.1 56.9 242.3M103.8 165.9Q80.6 178.7 57.9 191.7M60.4 193.4Q36.5 179.1 12.5 165.5M145.9 189.6Q147.0 216.5 146.4 243.2M100.6 268.9Q123.5 254.6 147.8 241.3M58.2 245.3Q57.6 218.5 58.0 191.8M101.2 166.1Q124.0 178.8 146.4 191.7M190.1 265.8Q188.9 292.8 190.0 319.9M192.1 317.5Q168.4 331.8 145.2 344.5M99.9 317.8Q124.7 332.4 147.5 344.9M143.8 241.5Q166.8 253.8 189.8 268.5M188.4 317.5Q211.4 332.6 235.4 345.1M190.2 115.9Q189.6 140.9 190.2 165.7M143.8 192.9Q167.0 180.6 189.7 166.7M233.7 190.9Q235.4 217.7 234.1 245.1M189.3 268.5Q211.5 255.5 234.3 242.8M188.8 166.1Q212.0 179.9 234.0 191.2M278.3 265.8Q276.5 293.4 277.7 321.2M232.5 345.4Q255.0 331.7 278.5 318.6M232.2 241.6Q255.1 254.8 278.9 268.8M188.9 115.9Q212.9 102.0 235.8 89.2M277.9 113.5Q278.1 141.3 278.2 168.8M233.2 191.9Q256.3 178.8 278.7 166.0M234.1 90.1Q257.0 102.6 279.0 116.7M322.5 189.4Q320.8 217.4 322.3 245.0M276.1 268.5Q299.5 254.3 323.5 241.0M276.6 165.9Q300.9 178.4 323.8 192.9M365.9 265.5Q365.5 292.6 365.6 319.3M320.3 241.3Q344.7 256.6 367.8 269.3M278.0 115.6Q299.5 103.4 322.3 89.9M366.6 115.6Q343.4 104.3 321.4 90.4" />
+			<path class="edge last" d="M102.5 114.1Q102.2 141.0 102.2 168.3M101.6 116.1Q124.1 102.9 146.8 90.0" />
+
+			<g>
+				<circle class="dot dead" cx="102" cy="268" r="3.4" /><circle class="dot dead" cx="102" cy="166.4" r="3.4" /><circle class="dot dead" cx="58" cy="191.8" r="3.4" /><circle class="dot dead" cx="146" cy="191.8" r="3.4" />
+				<circle class="dot dead" cx="146" cy="242.6" r="3.4" /><circle class="dot dead" cx="190" cy="268" r="3.4" /><circle class="dot dead" cx="190" cy="318.8" r="3.4" /><circle class="dot dead" cx="190" cy="166.4" r="3.4" />
+				<circle class="dot dead" cx="234" cy="191.8" r="3.4" /><circle class="dot dead" cx="234" cy="242.6" r="3.4" /><circle class="dot dead" cx="278" cy="268" r="3.4" /><circle class="dot dead" cx="278" cy="115.6" r="3.4" />
+				<circle class="dot dead" cx="278" cy="166.4" r="3.4" /><circle class="dot dead" cx="322" cy="242.6" r="3.4" /><circle class="dot dead" cx="366" cy="268" r="3.4" /><circle class="dot dead" cx="322" cy="90.2" r="3.4" />
+				<circle class="dot" cx="102" cy="318.8" r="3.4" /><circle class="dot" cx="58" cy="344.2" r="3.4" /><circle class="dot" cx="14" cy="318.8" r="3.4" /><circle class="dot" cx="14" cy="268" r="3.4" />
+				<circle class="dot" cx="58" cy="242.6" r="3.4" /><circle class="dot" cx="102" cy="115.6" r="3.4" /><circle class="dot" cx="14" cy="166.4" r="3.4" /><circle class="dot" cx="14" cy="115.6" r="3.4" />
+				<circle class="dot" cx="58" cy="90.2" r="3.4" /><circle class="dot" cx="146" cy="344.2" r="3.4" /><circle class="dot" cx="234" cy="344.2" r="3.4" /><circle class="dot" cx="234" cy="395.1" r="3.4" />
+				<circle class="dot" cx="190" cy="420.5" r="3.4" /><circle class="dot" cx="146" cy="395.1" r="3.4" /><circle class="dot" cx="190" cy="115.6" r="3.4" /><circle class="dot" cx="146" cy="90.2" r="3.4" />
+				<circle class="dot" cx="278" cy="318.8" r="3.4" /><circle class="dot" cx="234" cy="39.4" r="3.4" /><circle class="dot" cx="234" cy="90.2" r="3.4" /><circle class="dot" cx="146" cy="39.4" r="3.4" />
+				<circle class="dot" cx="190" cy="14" r="3.4" /><circle class="dot" cx="322" cy="191.8" r="3.4" /><circle class="dot" cx="366" cy="318.8" r="3.4" /><circle class="dot" cx="322" cy="344.2" r="3.4" />
+				<circle class="dot" cx="366" cy="115.6" r="3.4" /><circle class="dot" cx="366" cy="166.4" r="3.4" />
+			</g>
+		</g>
+	</svg>
+
+	<nav class="toolbar" aria-label="Toolbar">
+		<button class="btn" type="button">back</button>
+		<button class="btn" type="button">resign</button>
+		<button class="btn" type="button">reset stats</button>
+		<button class="btn on" type="button" aria-pressed="true">hints on</button>
+	</nav>
+</main>
+</body>
+</html>
