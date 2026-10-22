@@ -33,7 +33,7 @@
 			/* the one cursor, everywhere: a yellow pencil, clicking at its tip; the fallback is the browser's own */
 			--pencil: url('$lib/cursors/pencil.svg') 2 30, auto;
 			cursor: var(--pencil);
-			--title-top: 110px; /* where the title sits on both the home screen and the launcher */
+			--title-top: 94px; /* where the title sits on both the home screen and the launcher */
 
 			background: var(--desk);
 			color: var(--ink);
