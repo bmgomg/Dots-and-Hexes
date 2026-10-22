@@ -1,6 +1,7 @@
 import { chooseMove } from './ai';
 import { APP_STATE, DX, HUMAN, LEVELS, MSG_SINGLES, MSG_START_TIP, ROBOT, WINNER_DRAW } from './const';
 import { applyMove, boardOf, deadDots, emptyGame, legalMoves, scores, SIZES } from './engine';
+import { _sound, sfx, tap, whoosh } from './sound.svelte';
 import { post } from './utils';
 
 export const newStats = () => ({ plays: 0, wins1: 0, wins2: 0, total: 0, best: 0 });
@@ -111,7 +112,7 @@ class Store {
 	percent = (player) => (this.board ? Math.round((100 * this.scores[player]) / this.board.hexes.length) : 0);
 
 	persistCommon = () => {
-		const json = JSON.stringify({ mode: this.mode, noStartTip: this.noStartTip });
+		const json = JSON.stringify({ mode: this.mode, noStartTip: this.noStartTip, sfx: _sound.sfx, music: Math.abs(_sound.music) });
 		localStorage.setItem(APP_STATE, json);
 	};
 
@@ -128,6 +129,8 @@ class Store {
 			};
 
 			this.noStartTip = !!job.noStartTip;
+			_sound.sfx = job.sfx === 0 ? 0 : 1;
+			_sound.music = job.music === 0 ? 0 : 1;
 		}
 	};
 
@@ -164,6 +167,7 @@ class Store {
 		this.fresh = false;
 		this.game = emptyGame(this.mode.size);
 		this.persist();
+		sfx('dice');
 		this.maybeShowStartTip();
 	};
 
@@ -185,6 +189,7 @@ class Store {
 			return;
 		}
 
+		tap();
 		this.sel = null;
 		this.game = { ...this.game, turn: 3 - this.game.turn };
 		this.persist();
@@ -196,12 +201,21 @@ class Store {
 
 	play = (mv) => {
 		const wasSingle = this.legal[0]?.single;
+		const p = this.game.turn;
+		const had = this.scores[p];
 
 		this.dismissStartTip();
 		this.game = applyMove(this.board, this.game, mv);
 		this.sel = null;
 		this.to = null;
 		this.fresh = true;
+
+		// the pencil, then a chime for each player's claims
+		sfx(p === 1 ? 'link1' : 'link2');
+
+		if (this.scores[p] > had) {
+			post(() => sfx(p === 1 ? 'score1' : 'score2'), 250);
+		}
 
 		if (this.winner) {
 			this.onOver();
@@ -218,13 +232,20 @@ class Store {
 
 		this.updateStats();
 
+		let chime;
+
 		if (w === WINNER_DRAW) {
 			this.message = 'it’s a draw!';
+			chime = 'draw';
 		} else if (this.mode.opp === ROBOT) {
 			this.message = w === 1 ? 'you won!' : 'you lost';
+			chime = w === 1 ? 'won' : 'lost';
 		} else {
 			this.message = `player ${w} won!`;
+			chime = `player${w}wins`;
 		}
+
+		post(() => sfx(chime), 600);
 	};
 
 	updateStats = () => {
@@ -251,6 +272,7 @@ class Store {
 		this.prompt = null;
 		this.sel = null;
 		this.game = { ...this.game, resign: p };
+		sfx(this.mode.opp === ROBOT ? 'lost' : 'draw');
 		this.message = (this.mode.opp === HUMAN ? 'player ' + p : 'you') + ' resigned';
 		this.updateStats();
 		this.persist();
@@ -259,6 +281,7 @@ class Store {
 	resetStats = () => {
 		this.prompt = null;
 		this.stats = newStats();
+		whoosh();
 		this.persist();
 	};
 
@@ -278,9 +301,11 @@ class Store {
 
 		moveTimer = post(() => {
 			this.sel = mv.a;
+			tap();
 
 			moveTimer = post(() => {
 				this.to = mv.c;
+				tap();
 
 				moveTimer = post(() => {
 					this.busy = false;
@@ -301,6 +326,11 @@ class Store {
 
 		if (this.sel === null) {
 			this.sel = nearest(bd, live, p, 0.7);
+
+			if (this.sel !== null) {
+				tap();
+			}
+
 			return;
 		}
 
@@ -310,12 +340,14 @@ class Store {
 
 		if (v === this.sel) {
 			this.sel = null;
+			tap();
 		} else if (v !== null) {
 			// ring the other end first, then draw the path
 			const mv = targets.find((t) => t.other === v).move;
 
 			this.to = v;
 			this.busy = true;
+			tap();
 
 			moveTimer = post(() => {
 				this.busy = false;
@@ -323,6 +355,10 @@ class Store {
 			}, 300);
 		} else {
 			this.sel = nearest(bd, live, p, 0.5);
+
+			if (this.sel !== null) {
+				tap();
+			}
 		}
 
 		this.dismissStartTip();

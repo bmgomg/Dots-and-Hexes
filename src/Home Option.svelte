@@ -2,6 +2,7 @@
 	import { HUMAN } from './const';
 	import Hex from './Hex.svelte';
 	import { ss } from './shared.svelte';
+	import { plop, tap } from './sound.svelte';
 	import { post } from './utils';
 
 	const { opp } = $props();
@@ -18,6 +19,7 @@
 
 			if (scale < 1) {
 				scale = 1;
+				plop();
 			} else {
 				post(onClick);
 			}
@@ -40,6 +42,7 @@
 			return;
 		}
 
+		tap();
 		scale = 0.85;
 		timer = post(() => (timer = null), 500);
 	};

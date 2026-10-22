@@ -1,9 +1,23 @@
 <script>
-	// A plain handwritten button for the toolbar, launcher and prompts.
-	const { label, big = false, disabled = false, onClick } = $props();
+	// A plain handwritten button for the toolbar, launcher and prompts. A toggle passes its
+	// other label as `alt`: the button keeps room for both, so flipping it moves nothing.
+	import { tap } from './sound.svelte';
+
+	const { label, alt, big = false, disabled = false, onClick } = $props();
+
+	const onclick = () => {
+		tap();
+		onClick?.();
+	};
 </script>
 
-<button type="button" class="button" class:big {disabled} onclick={onClick}>{label}</button>
+<button type="button" class="button" class:big {disabled} {onclick}>
+	{#if alt}
+		<span class="labels"><span>{label}</span><span class="ghost" aria-hidden="true">{alt}</span></span>
+	{:else}
+		{label}
+	{/if}
+</button>
 
 <style>
 	.button {
@@ -13,7 +27,7 @@
 		background: transparent;
 		border: 0;
 		min-height: 44px;
-		padding: 0 11px;
+		padding: 0 8px;
 		cursor: pointer;
 		transition: scale 0.1s;
 	}
@@ -30,6 +44,19 @@
 	.button:disabled {
 		opacity: 0.3;
 		pointer-events: none;
+	}
+
+	.labels {
+		display: grid;
+		justify-items: start;
+	}
+
+	.labels > * {
+		grid-area: 1/1;
+	}
+
+	.ghost {
+		visibility: hidden;
 	}
 
 	.big {

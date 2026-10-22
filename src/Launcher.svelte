@@ -1,9 +1,10 @@
 <script>
 	import { fade } from 'svelte/transition';
 	import { LEVEL_NAMES, LEVELS, ROBOT } from './const';
-	import { SIZES } from './engine';
+	import { boardOf, SIZES } from './engine';
 	import Hex from './Hex.svelte';
 	import { ss } from './shared.svelte';
+	import { _sound, tap } from './sound.svelte';
 	import Button from './Button.svelte';
 
 	let size = $derived(ss.mode.size);
@@ -24,6 +25,40 @@
 		} else {
 			ss.newGame();
 		}
+
+		// the first tap that may start audio
+		if (!_sound.musicPlayed) {
+			_sound.playMusic();
+		}
+	};
+
+	// A pencil sketch of each board, all at one scale, so the sizes compare at a glance.
+	const SCALE = 7;
+	const PAD = 0.2;
+
+	const sketch = (sz) => {
+		const bd = boardOf(sz);
+		const xs = bd.verts.map((v) => v.x);
+		const ys = bd.verts.map((v) => v.y);
+		const x0 = Math.min(...xs) - PAD;
+		const y0 = Math.min(...ys) - PAD;
+		const w = Math.max(...xs) + PAD - x0;
+		const h = Math.max(...ys) + PAD - y0;
+		const hexes = bd.hexes.map((hx) => hx.vs.map((i) => `${bd.verts[i].x},${bd.verts[i].y}`).join(' '));
+
+		return { view: `${x0} ${y0} ${w} ${h}`, width: w * SCALE, height: h * SCALE, hexes };
+	};
+
+	const sketches = Object.fromEntries(SIZES.map((sz) => [sz, sketch(sz)]));
+
+	const onSize = (sz) => {
+		tap();
+		size = sz;
+	};
+
+	const onLevel = (lv) => {
+		tap();
+		level = lv;
 	};
 </script>
 
@@ -33,14 +68,22 @@
 		<div class="prompt">Select size</div>
 		<div class="ops">
 			{#each SIZES as sz (sz)}
-				<div class="size" class:selected={sz === size} onpointerdown={() => (size = sz)}>{sz}</div>
+				{@const sk = sketches[sz]}
+				<div class="size" class:selected={sz === size} onpointerdown={() => onSize(sz)}>
+					<svg class="sketch" viewBox={sk.view} width={sk.width} height={sk.height} aria-hidden="true">
+						{#each sk.hexes as points, i (i)}
+							<polygon {points} />
+						{/each}
+					</svg>
+					<span>{sz}</span>
+				</div>
 			{/each}
 		</div>
 		{#if ss.mode.opp === ROBOT}
 			<div class="prompt second">Select opponent</div>
 			<div class="ops skills">
 				{#each LEVELS as lv, i (lv)}
-					<div class="skill" class:selected={lv === level} onpointerdown={() => (level = lv)}>
+					<div class="skill" class:selected={lv === level} onpointerdown={() => onLevel(lv)}>
 						<Hex size={46} color="p2" pips={i + 1} />
 						<span>{LEVEL_NAMES[lv]}</span>
 					</div>
@@ -85,6 +128,7 @@
 	.ops {
 		display: grid;
 		grid-auto-flow: column;
+		align-items: end;
 		gap: 24px;
 	}
 
@@ -123,12 +167,30 @@
 		pointer-events: none;
 	}
 
+	/* the sketches sit on one line, so the numbers under them line up */
 	.size {
-		width: 64px;
-		height: 56px;
+		width: 76px;
+		box-sizing: border-box;
+		padding: 10px 0 2px;
 		display: grid;
-		place-content: center;
-		font-size: 32px;
+		grid-template-rows: 60px auto;
+		justify-items: center;
+		align-items: end;
+		font-size: 28px;
+		line-height: 1.2;
+	}
+
+	.sketch {
+		overflow: visible;
+		filter: url(#pencil);
+	}
+
+	.sketch polygon {
+		fill: none;
+		stroke: var(--ink);
+		stroke-width: 1.1;
+		stroke-linejoin: round;
+		vector-effect: non-scaling-stroke;
 	}
 
 	.skill {

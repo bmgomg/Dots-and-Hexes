@@ -13,14 +13,16 @@ cards taped on for the launcher and prompts. No images except the BMG splash. Th
 
 Splash (BMG) → Home (title, tagline, rules, "play with friend" / "play against ai") → Launcher (size 7/13/19;
 robot level easy / not easy / hard / killer; ids `easy medium hard killer`) → Game page: stats row, scoreboard (avatar, score, pie, score, avatar), board,
-message band, prompts, toolbar (back, resign, reset stats).
+message band, prompts, toolbar (back, resign, reset stats, sfx, music).
 
 - Avatars are colored-pencil hexagons that rock on their turn, with a pencil swoosh under them. Robot avatars from Triangula are not
   copied; the robot's hexagon shows its level as 1–4 pips plus the level name.
 - Before the first line, tapping a player makes them go first. A robot made to go first waits for the Start prompt.
 - No hints. Selecting a dot previews its moves as dashed graphite lines.
 - Stats and the unfinished game are stored per mode (opponent, size, level). No undo, as in Triangula.
-- No sound or music yet.
+- Sound effects and music are Triangula's (`src/lib/sounds`): taps, a pencil sound per player for each line, a chime
+  per player for each claim, dice for a new game, win / lose / draw chimes. The music starts at the launcher's play
+  (the first tap that may start audio) and pauses while the window is in the background.
 
 ## Files
 
@@ -28,6 +30,8 @@ message band, prompts, toolbar (back, resign, reset stats).
   `drawn[e]` / `owner[h]` hold the player (1 or 2), or -1.
 - `src/ai.js` — `chooseMove(board, drawn, level)`: easy / medium / hard, ported from the prototype, and killer:
   hard plus a perfect endgame (with `SOLVE_LINES` (20) or fewer lines left, an exact alpha-beta search).
+- `src/sound.svelte.js` — Triangula's sound module (Howler): `_sound` (`sfx`, `music` on/off, saved with the mode),
+  `sfx(name)` from the sprite, `tap`, `plop`, `whoosh`, `playMusic`.
 - `src/shared.svelte.js` — the store `ss`: screens, mode, stats, game, robot turns, tap hit-testing, localStorage.
 - `src/Board.svelte` — the SVG board, in hex units. Lines are hand-drawn (each bows a little and runs past its
   dots, fixed per line); claimed hexes are colored-pencil scribbles; the last move is pressed hard (`--last`); the
@@ -39,7 +43,16 @@ message band, prompts, toolbar (back, resign, reset stats).
   `--friend`, `--gold`, …), with the global `.hl` (highlighter) and `.card` (taped index card) classes.
 - The rest follow Triangula's components: `Home`, `Launcher`, `Game Page`, `Stats`, `Scoreboard`, `Avatar`, `Pie`,
   `Message`, `Prompt`, `Toolbar`, `Splash`, `Frame` (the graph pad). `Button.svelte` is the one plain handwritten
-  button (toolbar, launcher, prompts; `on` highlights it); `Hex.svelte` draws the hexagon icons (`color` p1 / p2 / friend).
+  button (toolbar, launcher, prompts; it taps; a toggle passes `alt`, its other label, so it keeps one width); `Hex.svelte` draws the hexagon icons (`color` p1 / p2 / friend).
+
+## Build (as in Triangula)
+
+- `npm run build` — the normal build, for Vercel (`@sveltejs/adapter-vercel`).
+- Static build (into `build/`): in `svelte.config.js` switch to `adapterStatic()`, and in `src/routes/+layout.js`
+  uncomment `prerender = true`.
+- `npm run build:itch` — `scripts/build-itch.js` (Triangula's, plus `icons` in its drop list): a static build in Vite's
+  `itch` mode into `build-itch/`, without the manifest, install icons and app-install head tags, zipped as
+  `build-itch/bitch.zip` to upload.
 
 ## Rules (agreed in the prototype)
 
