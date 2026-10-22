@@ -56,8 +56,9 @@ self.addEventListener('fetch', (event) => {
 
 	event.respondWith(
 		(async () => {
-			// built files never change under their names, so the cache wins (whatever their ?v= query)
-			if (assets.includes(url.pathname)) {
+			// built files never change under their names, so the cache wins (whatever their ?v= query);
+			// not the manifest, which Android re-reads for an installed app's colors and icons
+			if (assets.includes(url.pathname) && url.pathname !== '/manifest.json') {
 				const hit = await caches.match(req, { ignoreSearch: true });
 
 				if (hit) {
