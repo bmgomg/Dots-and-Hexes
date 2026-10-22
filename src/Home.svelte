@@ -27,13 +27,13 @@
 		{/snippet}
 		<div class="bullets">
 			{@render bullet(`Take turns ${hi}tapping two dots</span> two steps apart. Both lines between them get drawn.`, 0)}
-			{@render bullet(`After the opening move, the path must ${hi}touch an existing line</span>, at either end or in the middle.`, 1)}
+			{@render bullet(`After the opening move, the path must ${hi}touch an existing line</span>, at either end or in the&nbsp;middle.`, 1)}
 			{@render bullet(`Close a hex to claim it, then ${hi}move again</span>.`, 2)}
 			{@render bullet(
 				`When no two-line move is left, draw ${hi}one line at a time</span>. Then you move again only if your line closes two hexes at once.`,
 				3
 			)}
-			{@render bullet(`When every line is drawn, the ${hi}most hexes</span> win.`, 4)}
+			{@render bullet(`When every line is drawn, the ${hi}most&nbsp;hexes</span>&nbsp;win.`, 4)}
 		</div>
 		<div class="ops">
 			<Option opp="human" />
@@ -85,7 +85,6 @@
 	.text {
 		font-size: 19px;
 		line-height: 27px;
-		text-wrap: balance; /* even lines, so no one-word last line */
 	}
 
 	.ops {
