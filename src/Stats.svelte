@@ -7,7 +7,7 @@
 	const ave = $derived(ss.stats.plays ? Math.round(ss.stats.total / ss.stats.plays) : 0);
 </script>
 
-{#if !ss.launcher}
+{#if ss.gameScreen}
 	<div class="stats grid flowcol" in:fade={SCREEN_IN} out:fade={SCREEN_OUT}>
 		<div class="stat p1">
 			<span class="label">wins</span>

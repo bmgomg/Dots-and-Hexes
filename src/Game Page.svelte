@@ -12,7 +12,7 @@
 <div class="game-page ga11" class:show={!ss.home}>
 	<Stats />
 	<Scoreboard />
-	{#if !ss.launcher && ss.game}
+	{#if ss.gameScreen && ss.game}
 		<Board />
 	{/if}
 	<Launcher />

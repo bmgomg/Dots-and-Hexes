@@ -38,6 +38,11 @@ class Store {
 	// screens: home, then the launcher, then the game page under it
 	home = $state(true);
 	launcher = $state(false);
+
+	// The game screen itself. Its pieces (board, stats, scoreboard, message, prompt) show only
+	// here, so they never pop up over the title while home and the launcher switch.
+	gameScreen = $derived(!this.home && !this.launcher);
+
 	prompt = $state(null);
 	message = $state(null);
 	scale = $state(1);

@@ -14,7 +14,7 @@
 	};
 </script>
 
-{#if !ss.launcher && ss.message}
+{#if ss.gameScreen && ss.message}
 	{#key ss.message}
 		<div
 			class="message grid {ss.message === MSG_START_TIP ? 'start-tip' : 'pulse'}"

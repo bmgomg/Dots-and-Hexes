@@ -7,7 +7,7 @@
 	import { ss } from './shared.svelte';
 </script>
 
-{#if !ss.launcher && ss.game}
+{#if ss.gameScreen && ss.game}
 	<div class="scoreboard grid psc" in:fade={SCREEN_IN} out:fade={SCREEN_OUT}>
 		<Avatar player={1} />
 		<Score player={1} />

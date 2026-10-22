@@ -17,7 +17,7 @@
 	};
 </script>
 
-{#if !ss.launcher && ss.game && on}
+{#if ss.gameScreen && ss.game && on}
 	{#key ss.prompt}
 		<div class="prompt grid card" in:fade|global={{ delay }} out:fade>
 			{#if ss.prompt === PROMPT_RESET_STATS}
