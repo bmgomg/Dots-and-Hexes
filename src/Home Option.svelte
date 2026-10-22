@@ -62,7 +62,7 @@
 		display: grid;
 		place-items: center;
 		font-size: 18px;
-		cursor: pointer;
+		cursor: var(--hand);
 		transition: scale 0.1s;
 		gap: 5px;
 	}

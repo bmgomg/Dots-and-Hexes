@@ -28,7 +28,7 @@
 		border: 0;
 		min-height: 44px;
 		padding: 0 8px;
-		cursor: pointer;
+		cursor: var(--hand);
 		transition: scale 0.1s;
 	}
 

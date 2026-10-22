@@ -102,7 +102,6 @@
 <svg
 	bind:this={svg}
 	class="board nohi"
-	class:locked={ss.robotTurn || ss.winner}
 	class:shake={game.resign}
 	viewBox={bd.view.join(' ')}
 	{width}
@@ -182,12 +181,7 @@
 		place-self: center;
 		display: block;
 		overflow: visible;
-		cursor: pointer;
 		touch-action: manipulation;
-	}
-
-	.locked {
-		cursor: default;
 	}
 
 	.fill1 {

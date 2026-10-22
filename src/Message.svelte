@@ -39,7 +39,7 @@
 	.start-tip {
 		font-size: 17px;
 		color: var(--ink-soft);
-		cursor: pointer;
+		cursor: var(--hand);
 	}
 
 	.pulse {

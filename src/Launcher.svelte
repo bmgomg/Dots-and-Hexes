@@ -153,7 +153,7 @@
 		position: relative;
 		color: var(--ink);
 		opacity: 0.5;
-		cursor: pointer;
+		cursor: var(--hand);
 		transition: opacity 0.2s;
 	}
 
