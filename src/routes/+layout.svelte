@@ -30,10 +30,8 @@
 			--tape: rgba(225, 222, 205, 0.75);
 			--desk: #4a3a2e; /* the walnut desk under the pad, and the browser's bars around it */
 
-			/* cursors: a yellow pencil (the click point is its tip), and a pointing hand over
-			   buttons and other choices (the fingertip); the fallbacks are the browser's own */
+			/* the one cursor, everywhere: a yellow pencil, clicking at its tip; the fallback is the browser's own */
 			--pencil: url('$lib/cursors/pencil.svg') 2 30, auto;
-			--hand: url('$lib/cursors/hand.svg') 12 6, pointer;
 			cursor: var(--pencil);
 			--title-top: 110px; /* where the title sits on both the home screen and the launcher */
 

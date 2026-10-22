@@ -27,7 +27,7 @@
 		position: relative;
 		width: 70px;
 		place-items: center;
-		cursor: var(--hand);
+		cursor: var(--pencil);
 	}
 
 	.spinner {
