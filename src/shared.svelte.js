@@ -8,6 +8,13 @@ export const newStats = () => ({ plays: 0, wins1: 0, wins2: 0, total: 0, best: 0
 
 let moveTimer;
 
+// the robot's pace, in ms: before its first dot, then its second, then the line; and the extra
+// pause before it moves again after a claim
+const ROBOT_FIRST = 900;
+const ROBOT_SECOND = 900;
+const ROBOT_DRAW = 600;
+const ROBOT_AGAIN = 700;
+
 // Taps snap to the nearest dot that makes sense right now, in board units (dot spacing = 1).
 const nearest = (bd, ids, p, maxR) => {
 	let best = null;
@@ -292,27 +299,32 @@ class Store {
 		}
 	};
 
-	// Like a player: it taps one dot, then the other.
+	// Like a player: it taps one dot, then the other, slowly enough to follow. After closing a hex it
+	// waits a little longer before moving again, so the claim registers first.
 	doRobotMove = () => {
 		const mv = chooseMove(this.board, this.game.drawn, this.mode.level);
+		const claimed = this.game.last?.hexes.length > 0;
 
 		this.busy = true;
 		this.dismissStartTip();
 
-		moveTimer = post(() => {
-			this.sel = mv.a;
-			tap();
-
-			moveTimer = post(() => {
-				this.to = mv.c;
+		moveTimer = post(
+			() => {
+				this.sel = mv.a;
 				tap();
 
 				moveTimer = post(() => {
-					this.busy = false;
-					this.play(mv);
-				}, 400);
-			}, 600);
-		}, 600);
+					this.to = mv.c;
+					tap();
+
+					moveTimer = post(() => {
+						this.busy = false;
+						this.play(mv);
+					}, ROBOT_DRAW);
+				}, ROBOT_SECOND);
+			},
+			ROBOT_FIRST + (claimed ? ROBOT_AGAIN : 0)
+		);
 	};
 
 	// p is a point in board units
