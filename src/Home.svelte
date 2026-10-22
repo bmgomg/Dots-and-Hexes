@@ -33,7 +33,7 @@
 				`When no two-line move is left, draw ${hi}one line at a time</span>. Then you move again only if your line closes two hexes at once.`,
 				3
 			)}
-			{@render bullet(`When every line is drawn, the ${hi}most&nbsp;hexes</span>&nbsp;win.`, 4)}
+			{@render bullet(`When every line is drawn, the ${hi}most hexes</span>&nbsp;win.`, 4)}
 		</div>
 		<div class="ops">
 			<Option opp="human" />
@@ -52,15 +52,15 @@
 
 	.tagline {
 		justify-self: center;
-		margin-top: 16px;
+		margin-top: 22px;
 		font-size: 21px;
 	}
 
 	.bullets {
-		margin: 26px 0 34px;
-		width: 420px;
+		margin: 34px 0 46px;
+		width: 430px;
 		display: grid;
-		gap: 10px;
+		gap: 16px;
 	}
 
 	.bullet-item {
