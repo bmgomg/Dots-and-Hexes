@@ -104,9 +104,10 @@
 {/if}
 
 <style>
+	/* spans the empty stats and scoreboard rows too, so it centers between the top and the toolbar */
 	.launcher-page {
 		place-self: center;
-		grid-area: 3/1;
+		grid-area: 1/1/4/2;
 		display: grid;
 		justify-items: center;
 		gap: 30px;
