@@ -1,6 +1,6 @@
 <script>
 	import { fade } from 'svelte/transition';
-	import { LEVEL_NAMES, LEVELS, ROBOT } from './const';
+	import { LEVEL_NAMES, LEVELS, ROBOT, SCREEN_IN, SCREEN_OUT } from './const';
 	import { boardOf, SIZES } from './engine';
 	import Hex from './Hex.svelte';
 	import { ss } from './shared.svelte';
@@ -64,7 +64,7 @@
 </script>
 
 {#if ss.launcher}
-	<div class="launcher-page" transition:fade={{ duration: 200 }}>
+	<div class="launcher-page" in:fade={SCREEN_IN} out:fade={SCREEN_OUT}>
 		<Title />
 		<!-- an index card taped to the pad; the choices are circled in blue pencil -->
 		<div class="launcher card">

@@ -2,13 +2,13 @@
 	import { fade } from 'svelte/transition';
 	import { ss } from './shared.svelte';
 	import NumberFlow from '@number-flow/svelte';
-	import { ROBOT } from './const';
+	import { ROBOT, SCREEN_IN, SCREEN_OUT } from './const';
 
 	const ave = $derived(ss.stats.plays ? Math.round(ss.stats.total / ss.stats.plays) : 0);
 </script>
 
 {#if !ss.launcher}
-	<div class="stats grid flowcol" in:fade>
+	<div class="stats grid flowcol" in:fade={SCREEN_IN} out:fade={SCREEN_OUT}>
 		<div class="stat p1">
 			<span class="label">wins</span>
 			<NumberFlow value={ss.stats.wins1} />

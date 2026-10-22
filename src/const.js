@@ -14,3 +14,6 @@ export const LEVEL_NAMES = { easy: 'easy', medium: 'not so easy', hard: 'even ha
 export const ROBOT = 'robot';
 export const HUMAN = 'human';
 export const WINNER_DRAW = 3;
+// Screen changes: the old screen fades out, then the new one fades in.
+export const SCREEN_OUT = { duration: 200 };
+export const SCREEN_IN = { duration: 300, delay: 200 };

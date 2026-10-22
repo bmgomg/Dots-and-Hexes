@@ -29,7 +29,9 @@
 		transition: opacity 0.2s;
 	}
 
+	/* on the way in it waits for the home screen to fade out */
 	.show {
 		opacity: 1;
+		transition: opacity 0.3s 0.2s;
 	}
 </style>

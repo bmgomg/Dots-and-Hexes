@@ -1,5 +1,6 @@
 <script>
 	import { fade } from 'svelte/transition';
+	import { SCREEN_IN, SCREEN_OUT } from './const';
 	import { onMount } from 'svelte';
 	import Option from './Home Option.svelte';
 	import Title from './Title.svelte';
@@ -12,7 +13,7 @@
 </script>
 
 {#if ss.home}
-	<div class="home ga11 nohi" in:fade={{ duration: 200 }}>
+	<div class="home ga11 nohi" in:fade={SCREEN_IN} out:fade={SCREEN_OUT}>
 		<Title />
 		<div class="tagline">Draw two. <span class="hl">Close a hex. Go again.</span></div>
 		{#snippet bullet(text, i)}

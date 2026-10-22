@@ -1,5 +1,6 @@
 <script>
 	import { fade } from 'svelte/transition';
+	import { SCREEN_IN, SCREEN_OUT } from './const';
 	import { boardSize, ss } from './shared.svelte';
 
 	const bd = $derived(ss.board);
@@ -110,7 +111,8 @@
 	style:--w-last={3.4 * k}
 	style:--w-ring={2.2 * k}
 	style:--dash="{5 * k} {6 * k}"
-	in:fade
+	in:fade={SCREEN_IN}
+	out:fade={SCREEN_OUT}
 	role="img"
 	aria-label="Game board"
 	{onpointerdown}
