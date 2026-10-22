@@ -48,7 +48,7 @@
 
 	.labels {
 		display: grid;
-		justify-items: start;
+		justify-items: center;
 	}
 
 	.labels > * {
