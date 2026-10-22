@@ -34,7 +34,7 @@ message band, prompts, toolbar (back, resign, reset stats, sfx, music).
   `sfx(name)` from the sprite, `tap`, `plop`, `whoosh`, `playMusic`.
 - `src/shared.svelte.js` — the store `ss`: screens, mode, stats, game, robot turns, tap hit-testing, localStorage.
 - `src/Board.svelte` — the SVG board, in hex units. Lines are hand-drawn (each bows a little and runs past its
-  dots, fixed per line); claimed hexes are colored-pencil scribbles; the last move is pressed hard (`--last`); the
+  dots, fixed per line); claimed hexes are colored-pencil scribbles; the last move is pressed hard (`--last`), except once the game is over; the
   selected dot gets a pencil loop in the mover's color. Dots out of play (`deadDots`) are half erased; all drawn
   lines stay. It keeps its own copies of the pencil filters and fills, scaled to hex units by `k` (one pixel).
 - `src/Defs.svelte` — the shared SVG filters (`#pencil`, `#crayon`, `#grain`), colored-pencil fills

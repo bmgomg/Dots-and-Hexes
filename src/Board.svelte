@@ -153,7 +153,8 @@
 	<g class="pencil">
 		{#each strokes as d, i (i)}
 			{#if game.drawn[i] >= 0}
-				<path class="edge" class:last={lastEdges.has(i)} class:draw={ss.fresh && lastEdges.has(i)} {d} />
+				<!-- the last move is pressed hard, but not once the game is over -->
+				<path class="edge" class:last={lastEdges.has(i) && !ss.winner} class:draw={ss.fresh && lastEdges.has(i)} {d} />
 			{/if}
 		{/each}
 
