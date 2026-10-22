@@ -6,28 +6,35 @@
 
 	onMount(ss.loadCommon);
 
-	const hi = '<span style="color: var(--gold);">';
+	// key words get a highlighter stroke (.hl is global: it lands in {@html})
+	const hi = '<span class="hl">';
 </script>
 
 {#if ss.home}
 	<div class="home ga11 nohi" in:fade={{ duration: 200 }}>
-		<div class="title">Dots <span class="amp">&amp;</span> Hexes</div>
-		<div class="tagline">Draw two. <span class="gold">Close a hex. Go again.</span></div>
-		{#snippet bullet(text)}
+		<div class="title"><span class="p1">Dots</span> &amp; <span class="p2">Hexes</span></div>
+		<svg class="underline" viewBox="0 0 100 12" preserveAspectRatio="none" aria-hidden="true">
+			<use href="#underline2" width="100" height="12" />
+		</svg>
+		<div class="tagline">Draw two. <span class="hl">Close a hex. Go again.</span></div>
+		{#snippet bullet(text, i)}
 			<div class="bullet-item">
-				<div class="bullet"></div>
+				<svg class="bullet" class:odd={i % 2} viewBox="0 0 12 12" aria-hidden="true">
+					<polygon points="10.3,3.5 10.3,8.5 6,11 1.7,8.5 1.7,3.5 6,1" />
+				</svg>
 				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 				<div class="text">{@html text}</div>
 			</div>
 		{/snippet}
 		<div class="bullets">
-			{@render bullet(`Take turns ${hi}tapping two dots</span> two steps apart. Both lines between them get drawn.`)}
-			{@render bullet(`After the opening move, the path must ${hi}touch an existing line</span>, at either end or in the middle.`)}
-			{@render bullet(`Close a hex to claim it, then ${hi}move again</span>.`)}
+			{@render bullet(`Take turns ${hi}tapping two dots</span> two steps apart. Both lines between them get drawn.`, 0)}
+			{@render bullet(`After the opening move, the path must ${hi}touch an existing line</span>, at either end or in the middle.`, 1)}
+			{@render bullet(`Close a hex to claim it, then ${hi}move again</span>.`, 2)}
 			{@render bullet(
-				`When no two-line move is left, draw ${hi}one line at a time</span>. Then you move again only if your line closes two hexes at once.`
+				`When no two-line move is left, draw ${hi}one line at a time</span>. Then you move again only if your line closes two hexes at once.`,
+				3
 			)}
-			{@render bullet(`When every line is drawn, the ${hi}most hexes</span> win.`)}
+			{@render bullet(`When every line is drawn, the ${hi}most hexes</span> win.`, 4)}
 		</div>
 		<div class="ops">
 			<Option opp="human" />
@@ -45,59 +52,70 @@
 
 	.title {
 		justify-self: center;
-		font-size: 52px;
-		letter-spacing: 0.04em;
-		color: var(--orange);
+		font-size: 54px;
+		line-height: 1.1;
+		letter-spacing: 0.02em;
+		transform: rotate(-1.5deg);
 	}
 
-	.amp {
-		color: var(--ink);
+	.p1 {
+		color: var(--p1);
+	}
+
+	.p2 {
+		color: #c4650f;
+	}
+
+	.underline {
+		justify-self: center;
+		width: 300px;
+		height: 12px;
+		margin-top: 2px;
+		overflow: visible;
+		filter: url(#pencil);
 	}
 
 	.tagline {
 		justify-self: center;
-		margin-top: 12px;
-		font-style: italic;
-		font-size: 18px;
-		letter-spacing: 0.06em;
-		opacity: 0.85;
-	}
-
-	.gold {
-		color: var(--gold);
+		margin-top: 16px;
+		font-size: 19px;
 	}
 
 	.bullets {
-		margin: 40px 0;
-		width: 380px;
+		margin: 34px 0 44px;
+		width: 386px;
 		display: grid;
-		gap: 20px;
+		gap: 14px;
 	}
 
 	.bullet-item {
 		display: grid;
-		grid: auto / auto 1fr;
-		gap: 1em;
+		grid: auto / 12px 1fr;
+		gap: 12px;
 	}
 
 	.bullet {
-		background: var(--gold);
-		border-radius: 50%;
-		height: 5px;
-		aspect-ratio: 1;
-		translate: 0 10px;
+		width: 12px;
+		height: 12px;
+		margin-top: 7px;
+		fill: var(--p1);
+		opacity: 0.75;
+	}
+
+	.bullet.odd {
+		fill: var(--p2);
+		opacity: 0.85;
 	}
 
 	.text {
-		font-size: 20.5px;
-		line-height: 1.1em;
-		letter-spacing: 0.04em;
+		font-size: 17px;
+		line-height: 25px;
 	}
 
 	.ops {
 		place-self: center;
 		display: grid;
 		grid-auto-flow: column;
-		gap: 40px;
+		gap: 34px;
 	}
 </style>

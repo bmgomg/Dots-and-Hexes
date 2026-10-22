@@ -55,32 +55,49 @@
 	};
 </script>
 
-{#if q1 === 100 || q2 === 100}
-	{@const bg = q1 === 100 ? 'var(--p1)' : 'var(--p2)'}
-	<div class="pie grid ga11" style="width: {width}px; background: {bg};"></div>
-{:else}
-	{@const paths = makePaths()}
-	{@const viewbox = `0 0 ${width} ${width}`}
-	{@const transform = `translate(${radius}, ${radius})`}
-	<div class="pie grid ga11">
-		<svg {width} height={width} viewBox={viewbox}>
-			<g {transform}>
-				<!-- at 0% the arc's two ends differ only by float noise, which draws a full circle -->
-				{#if q1 > 0}
-					<path d={paths[0]} fill="var(--p1)" />
-				{/if}
-				{#if q2 > 0}
-					<path d={paths[1]} fill="var(--p2)" />
-				{/if}
-			</g>
-			xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
-		</svg>
-	</div>
-{/if}
+<svg class="pie" {width} height={width} viewBox="{-radius} {-radius} {width} {width}" aria-hidden="true">
+	<g class="wedges">
+		{#if q1 === 100 || q2 === 100}
+			<circle class={q1 === 100 ? 'p1' : 'p2'} r={radius} />
+		{:else}
+			{@const paths = makePaths()}
+			<!-- at 0% the arc's two ends differ only by float noise, which draws a full circle -->
+			{#if q1 > 0}
+				<path class="p1" d={paths[0]} />
+			{/if}
+			{#if q2 > 0}
+				<path class="p2" d={paths[1]} />
+			{/if}
+		{/if}
+	</g>
+	<circle class="rim" r={radius} />
+</svg>
 
 <style>
 	.pie {
-		border-radius: 50%;
-		aspect-ratio: 1;
+		display: block;
+		overflow: visible;
+		filter: url(#crayon);
+	}
+
+	.wedges > * {
+		stroke-width: 1.4;
+		stroke-linejoin: round;
+	}
+
+	.p1 {
+		fill: url(#fill1);
+		stroke: var(--p1);
+	}
+
+	.p2 {
+		fill: url(#fill2);
+		stroke: var(--p2);
+	}
+
+	.rim {
+		fill: none;
+		stroke: var(--ink);
+		stroke-width: 1.6;
 	}
 </style>

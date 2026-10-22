@@ -9,7 +9,7 @@
 
 <style>
 	.score {
-		font-size: 32px;
+		font-size: 40px;
 	}
 
 	.p1 {
@@ -17,6 +17,6 @@
 	}
 
 	.p2 {
-		color: var(--p2);
+		color: var(--p2-text);
 	}
 </style>

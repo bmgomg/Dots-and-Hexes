@@ -9,7 +9,7 @@
 
 {#if !ss.launcher}
 	<div class="stats grid flowcol" in:fade>
-		<div class="stat">
+		<div class="stat p1">
 			<span class="label">wins</span>
 			<NumberFlow value={ss.stats.wins1} />
 		</div>
@@ -29,7 +29,7 @@
 				</div>
 			{/if}
 		</div>
-		<div class="stat">
+		<div class="stat p2">
 			<span class="label">wins</span>
 			<NumberFlow value={ss.stats.wins2} />
 		</div>
@@ -45,15 +45,26 @@
 	}
 
 	.stat {
-		gap: 10px;
-		align-items: center;
-		letter-spacing: 0.08em;
-		color: steelblue;
+		display: flex;
+		gap: 8px;
+		align-items: baseline;
+		font-size: 22px;
+		color: var(--ink);
+	}
+
+	.stat.p1 {
+		color: var(--p1);
+	}
+
+	.stat.p2 {
+		color: var(--p2-text);
 	}
 
 	.label {
-		color: var(--ink);
-		opacity: 0.6;
+		font-size: 14px;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--ink-soft);
 	}
 
 	.mid {

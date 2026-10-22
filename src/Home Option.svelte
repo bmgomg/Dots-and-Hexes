@@ -46,10 +46,10 @@
 </script>
 
 <div bind:this={_this} class="op" style="scale: {scale};" onpointerdown={onPointerDown}>
-	<!-- you in front, your opponent behind: gold for a friend, cyan for the robot -->
+	<!-- you in front, your opponent behind: yellow for a friend, orange for the robot -->
 	<div class="icon">
-		<div class="back"><Hex size={56} fill={opp === HUMAN ? 'var(--gold)' : 'var(--p2)'} /></div>
-		<div class="front"><Hex size={56} fill="var(--p1)" /></div>
+		<div class="back"><Hex size={52} color={opp === HUMAN ? 'friend' : 'p2'} /></div>
+		<div class="front"><Hex size={52} color="p1" /></div>
 	</div>
 	<div>{opp === HUMAN ? 'play with friend' : 'play against ai'}</div>
 </div>
@@ -58,15 +58,14 @@
 	.op {
 		display: grid;
 		place-items: center;
-		font-size: 20px;
-		letter-spacing: 0.04em;
+		font-size: 18px;
 		cursor: pointer;
 		transition: scale 0.1s;
 		gap: 5px;
 	}
 
-	.op:hover {
-		filter: brightness(1.2);
+	.op:hover > :last-child {
+		background: linear-gradient(180deg, transparent 62%, var(--gold) 62%, var(--gold) 84%, transparent 84%);
 	}
 
 	.icon {

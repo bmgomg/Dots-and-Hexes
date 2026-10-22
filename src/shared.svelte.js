@@ -1,6 +1,6 @@
 import { chooseMove } from './ai';
 import { APP_STATE, DX, HUMAN, LEVELS, MSG_SINGLES, MSG_START_TIP, ROBOT, WINNER_DRAW } from './const';
-import { applyMove, boardOf, claimsIf, deadDots, emptyGame, legalMoves, scores, SIZES } from './engine';
+import { applyMove, boardOf, deadDots, emptyGame, legalMoves, scores, SIZES } from './engine';
 import { post } from './utils';
 
 export const newStats = () => ({ plays: 0, wins1: 0, wins2: 0, total: 0, best: 0 });
@@ -34,7 +34,6 @@ class Store {
 	message = $state(null);
 	scale = $state(1);
 
-	showHints = $state(false);
 	noStartTip = $state(false);
 
 	mode = $state({ opp: ROBOT, size: 19, level: 'medium' });
@@ -85,12 +84,6 @@ class Store {
 	// the robot was made to go first and waits for the Start prompt
 	robotStart = $derived(this.robotTurn && !this.started && !this.busy);
 
-	// moves that would close a hex, shown as hints
-	claiming = $derived.by(() => {
-		const d = this.game?.drawn.slice();
-		return this.legal.filter((mv) => claimsIf(this.board, d, mv.es) > 0);
-	});
-
 	// dot -> [{ other, move }] for every legal move that starts or ends there
 	movesFrom = $derived.by(() => {
 		// built fresh on every change and never mutated after, so it needs no reactivity of its own
@@ -118,7 +111,7 @@ class Store {
 	percent = (player) => (this.board ? Math.round((100 * this.scores[player]) / this.board.hexes.length) : 0);
 
 	persistCommon = () => {
-		const json = JSON.stringify({ mode: this.mode, showHints: this.showHints, noStartTip: this.noStartTip });
+		const json = JSON.stringify({ mode: this.mode, noStartTip: this.noStartTip });
 		localStorage.setItem(APP_STATE, json);
 	};
 
@@ -134,7 +127,6 @@ class Store {
 				level: LEVELS.includes(level) ? level : 'medium'
 			};
 
-			this.showHints = !!job.showHints;
 			this.noStartTip = !!job.noStartTip;
 		}
 	};

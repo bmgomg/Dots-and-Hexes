@@ -1,32 +1,53 @@
 <script>
-	// A hexagon in a player's color, with 1–4 pips for a robot's level.
-	const { size = 50, fill, pips = 0 } = $props();
+	// A hexagon in colored pencil — color 'p1', 'p2' or 'friend' — with 1–4 pips for a robot's level.
+	const { size = 50, color, pips = 0 } = $props();
 
-	const HEX = '0.87,-0.5 0.87,0.5 0,1 -0.87,0.5 -0.87,-0.5 0,-1';
-	const xs = $derived(Array.from({ length: pips }, (_, i) => (i - (pips - 1) / 2) * 0.42));
+	// drawn in a 56px box, so the pixel-sized pencil filters in Defs fit it
+	const HEX = '49.65,15.5 49.65,40.5 28,53 6.35,40.5 6.35,15.5 28,3';
+	const xs = $derived(Array.from({ length: pips }, (_, i) => 28 + (i - (pips - 1) / 2) * 10.5));
 </script>
 
-<svg class="hex" width={size} height={size} viewBox="-1.05 -1.05 2.1 2.1" aria-hidden="true">
-	<polygon points={HEX} style="fill: {fill};" />
+<svg class="hex" width={size} height={size} viewBox="0 0 56 56" aria-hidden="true">
+	<!-- paper underneath, so a hexagon in front hides the one behind -->
+	<polygon class="paper" points={HEX} />
+	<polygon class="pencil {color}" points={HEX} />
 	{#each xs as x, i (i)}
-		<circle cx={x} cy="0" r="0.13" />
+		<circle cx={x} cy="28" r="3" />
 	{/each}
 </svg>
 
 <style>
 	.hex {
 		display: block;
-		filter: drop-shadow(0 3px 3px black);
+		overflow: visible;
 	}
 
-	polygon {
-		stroke: #ffffff60;
-		stroke-width: 0.06;
+	.paper {
+		fill: var(--bg);
+	}
+
+	.pencil {
+		stroke-width: 2;
 		stroke-linejoin: round;
+		filter: url(#crayon);
+	}
+
+	.p1 {
+		fill: url(#fill1);
+		stroke: var(--p1);
+	}
+
+	.p2 {
+		fill: url(#fill2);
+		stroke: var(--p2);
+	}
+
+	.friend {
+		fill: url(#fill3);
+		stroke: var(--friend);
 	}
 
 	circle {
-		fill: white;
-		filter: drop-shadow(0 0 0.05px black);
+		fill: var(--ink);
 	}
 </style>

@@ -32,13 +32,12 @@
 		grid-area: 3/1;
 		place-self: start center;
 		place-content: center;
-		font-size: 24px;
-		letter-spacing: 0.06em;
+		font-size: 28px;
 	}
 
 	.start-tip {
-		font-size: 18px;
-		opacity: 0.6;
+		font-size: 17px;
+		color: var(--ink-soft);
 		cursor: pointer;
 	}
 

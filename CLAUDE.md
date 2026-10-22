@@ -3,19 +3,22 @@
 _Draw two. Close a hex. Go again._ (working tagline)
 
 Two-player dots-and-boxes on hexes; every move draws two lines. Prototyped as a single HTML artifact in claude.ai,
-now a SvelteKit app with Triangula's structure and flow, but not its look: plain text buttons, one font
-(Roboto Condensed), no images except the BMG splash. Board colors are Triangula's. No theme of its own yet.
+now a SvelteKit app with Triangula's structure and flow, but its own look: paper and pencil, like the classic
+pre-computer game. A green graph pad, one handwriting font (Architects Daughter, bundled in `src/lib/fonts`),
+graphite lines and dots, blue (player 1) and orange (player 2) colored pencil, yellow highlighter, white index
+cards taped on for the launcher and prompts. No images except the BMG splash. The approved mock-ups are in
+`mockups/paper-pencil/` (static HTML and `paper.css`).
 
 ## Screens and flow (as in Triangula)
 
 Splash (BMG) → Home (title, tagline, rules, "play with friend" / "play against ai") → Launcher (size 7/13/19;
 robot level easy / not easy / hard / killer; ids `easy medium hard killer`) → Game page: stats row, scoreboard (avatar, score, pie, score, avatar), board,
-message band, prompts, toolbar (back, resign, reset stats, hints).
+message band, prompts, toolbar (back, resign, reset stats).
 
-- Avatars are plain hexagons in the player colors and spin on their turn. Robot avatars from Triangula are not
+- Avatars are colored-pencil hexagons that rock on their turn, with a pencil swoosh under them. Robot avatars from Triangula are not
   copied; the robot's hexagon shows its level as 1–4 pips plus the level name.
 - Before the first line, tapping a player makes them go first. A robot made to go first waits for the Start prompt.
-- Hints show the moves that would close a hex as gold dashes (the selected-dot preview is blue), like Triangula's claiming-move hints.
+- No hints. Selecting a dot previews its moves as dashed graphite lines.
 - Stats and the unfinished game are stored per mode (opponent, size, level). No undo, as in Triangula.
 - No sound or music yet.
 
@@ -26,11 +29,17 @@ message band, prompts, toolbar (back, resign, reset stats, hints).
 - `src/ai.js` — `chooseMove(board, drawn, level)`: easy / medium / hard, ported from the prototype, and killer:
   hard plus a perfect endgame (with `SOLVE_LINES` (20) or fewer lines left, an exact alpha-beta search).
 - `src/shared.svelte.js` — the store `ss`: screens, mode, stats, game, robot turns, tap hit-testing, localStorage.
-- `src/Board.svelte` — the SVG board. Colors are Triangula's (`--fill1/2`, `--p1/2`, orange last move, lime dots).
-  Dots out of play (`deadDots`) fade away, as in Triangula; all drawn lines stay.
+- `src/Board.svelte` — the SVG board, in hex units. Lines are hand-drawn (each bows a little and runs past its
+  dots, fixed per line); claimed hexes are colored-pencil scribbles; the last move is pressed hard (`--last`); the
+  selected dot gets a pencil loop in the mover's color. Dots out of play (`deadDots`) are half erased; all drawn
+  lines stay. It keeps its own copies of the pencil filters and fills, scaled to hex units by `k` (one pixel).
+- `src/Defs.svelte` — the shared SVG filters (`#pencil`, `#crayon`, `#grain`), colored-pencil fills
+  (`#fill1/2/3`) and doodles (`#underline2`, `#swoosh`), in pixels; mounted once in `+page.svelte`.
+- Colors are tokens in `routes/+layout.svelte` (`--bg`, `--ink`, `--line`, `--last`, `--p1`, `--p2`, `--p2-text`,
+  `--friend`, `--gold`, …), with the global `.hl` (highlighter) and `.card` (taped index card) classes.
 - The rest follow Triangula's components: `Home`, `Launcher`, `Game Page`, `Stats`, `Scoreboard`, `Avatar`, `Pie`,
-  `Message`, `Prompt`, `Toolbar`, `Splash`, `Frame`. `Button.svelte` is the one plain button (toolbar, launcher,
-  prompts); `Hex.svelte` draws the hexagon icons.
+  `Message`, `Prompt`, `Toolbar`, `Splash`, `Frame` (the graph pad). `Button.svelte` is the one plain handwritten
+  button (toolbar, launcher, prompts; `on` highlights it); `Hex.svelte` draws the hexagon icons (`color` p1 / p2 / friend).
 
 ## Rules (agreed in the prototype)
 

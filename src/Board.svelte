@@ -11,17 +11,72 @@
 	const targets = $derived(
 		sel === null || ss.robotTurn ? [] : (ss.movesFrom.get(sel) ?? []).filter((t) => ss.to === null || t.other === ss.to)
 	);
-	const hints = $derived(ss.showHints && sel === null && !ss.robotTurn ? ss.claiming : []);
 	const width = $derived(boardSize());
 	const height = $derived((width * bd.view[3]) / bd.view[2]);
 	const targetSet = $derived(new Set(targets.map((t) => t.other)));
 
+	// The board is drawn in hex units; k is one screen pixel in those units, so pencil
+	// widths, wobble and scribbles come out the same on every board size.
+	const k = $derived(bd.view[2] / width);
+
 	let svg;
 
 	const pts = (path) => path.map((i) => `${bd.verts[i].x},${bd.verts[i].y}`).join(' ');
+	const n = (x) => +x.toFixed(4);
+
+	// Fixed noise in [-0.5, 0.5) per line, so a line keeps its wobble across renders.
+	const wob = (i, j) => {
+		const s = Math.sin(i * 127.1 + j * 311.7) * 43758.5453;
+		return s - Math.floor(s) - 0.5;
+	};
+
+	// A hand-drawn line: it runs a little past both dots and bows slightly.
+	const stroke = (e, i) => {
+		const a = bd.verts[e.a];
+		const b = bd.verts[e.b];
+		const ux = b.x - a.x;
+		const uy = b.y - a.y;
+		const o1 = (1.5 + 2 * wob(i, 0)) * k;
+		const o2 = (1.5 + 2 * wob(i, 1)) * k;
+		const x1 = a.x - ux * o1 + wob(i, 2) * k;
+		const y1 = a.y - uy * o1 + wob(i, 3) * k;
+		const x2 = b.x + ux * o2 + wob(i, 4) * k;
+		const y2 = b.y + uy * o2 + wob(i, 5) * k;
+		const bow = 5 * wob(i, 6) * k;
+		const mx = (x1 + x2) / 2 - uy * bow;
+		const my = (y1 + y2) / 2 + ux * bow;
+
+		return `M${n(x1)} ${n(y1)}Q${n(mx)} ${n(my)} ${n(x2)} ${n(y2)}`;
+	};
+
+	const strokes = $derived(bd.edges.map(stroke));
+
+	// a loose pencil loop around a dot, about 12px across
+	const LOOP = [
+		[10, -9.6],
+		[18, -1.6],
+		[12, 12.4],
+		[0, 12.4],
+		[-11, 12.4],
+		[-14, 1.4],
+		[-10, -6.6],
+		[-6, -13.6],
+		[6, -14.6],
+		[13, -5.6]
+	];
+
+	const loop = (i) => {
+		const { x, y } = bd.verts[i];
+		const p = LOOP.map(([dx, dy]) => `${n(x + dx * k)} ${n(y + dy * k)}`);
+		return `M${p[0]}C${p[1]} ${p[2]} ${p[3]}C${p[4]} ${p[5]} ${p[6]}C${p[7]} ${p[8]} ${p[9]}`;
+	};
 
 	// Live dots start a legal move; while a dot is selected, only it and its targets stay live.
 	const dotClass = (i) => {
+		if (ss.deadDots.has(i)) {
+			return 'dot dead';
+		}
+
 		if (i === sel || i === ss.to) {
 			return 'dot selected';
 		}
@@ -32,7 +87,7 @@
 
 		const live = sel === null ? ss.movesFrom.has(i) : targetSet.has(i);
 
-		return live ? 'dot live' : 'dot gray';
+		return live ? 'dot' : 'dot gray';
 	};
 
 	const onpointerdown = (e) => {
@@ -51,70 +106,70 @@
 	viewBox={bd.view.join(' ')}
 	{width}
 	{height}
+	style:--w-line={2 * k}
+	style:--w-last={3.4 * k}
+	style:--w-ring={2.2 * k}
+	style:--dash="{5 * k} {6 * k}"
 	in:fade
 	role="img"
 	aria-label="Game board"
 	{onpointerdown}
 >
+	<!-- Defs' filters and fills are in pixels; these are the same in board units. -->
 	<defs>
-		<radialGradient id="dot-live" fx="0.4" fy="0.3" r="0.6">
-			<stop offset="0" stop-color="white" />
-			<stop offset="0.12" stop-color="lime" />
-			<stop offset="0.65" stop-color="darkgreen" />
-			<stop offset="1" stop-color="lime" />
-		</radialGradient>
-		<radialGradient id="dot-gray" fx="0.4" fy="0.3" r="0.6">
-			<stop offset="0" stop-color="#ddd" />
-			<stop offset="0.12" stop-color="#999" />
-			<stop offset="0.65" stop-color="#555" />
-			<stop offset="1" stop-color="#888" />
-		</radialGradient>
-		<radialGradient id="dot-selected" fx="0.4" fy="0.3" r="0.6">
-			<stop offset="0" stop-color="white" />
-			<stop offset="0.12" stop-color="orange" />
-			<stop offset="0.65" stop-color="orangered" />
-			<stop offset="1" stop-color="orange" />
-		</radialGradient>
+		<filter id="b-pencil" x="-5%" y="-5%" width="110%" height="110%">
+			<feTurbulence type="fractalNoise" baseFrequency={0.9 / k} numOctaves="2" seed="9" result="n" />
+			<feDisplacementMap in="SourceGraphic" in2="n" scale={2.2 * k} xChannelSelector="R" yChannelSelector="G" />
+		</filter>
+		<filter id="b-crayon" x="-5%" y="-5%" width="110%" height="110%">
+			<feTurbulence type="fractalNoise" baseFrequency={1.4 / k} numOctaves="2" seed="5" result="n" />
+			<feDisplacementMap in="SourceGraphic" in2="n" scale={4 * k} xChannelSelector="R" yChannelSelector="G" />
+		</filter>
+		{#each [1, 2] as p (p)}
+			<pattern
+				id="b-fill{p}"
+				class="fill{p}"
+				patternUnits="userSpaceOnUse"
+				width={10 * k}
+				height={6 * k}
+				patternTransform="rotate({p === 1 ? 24 : -24})"
+			>
+				<g transform="scale({k})">
+					<rect class="wash" width="10" height="6" />
+					<path class="scribble" d="M0 5 L2.5 1 L5 5 L7.5 1 L10 5" />
+				</g>
+			</pattern>
+		{/each}
 	</defs>
 
-	{#each game.owner as o, i (i)}
-		{#if o > 0}
-			<polygon class="hex" class:fresh={ss.fresh && last?.hexes.includes(i)} data-player={o} points={pts(bd.hexes[i].vs)} />
-		{/if}
-	{/each}
+	<g class="hexes">
+		{#each game.owner as o, i (i)}
+			{#if o > 0}
+				<polygon class="hex" class:fresh={ss.fresh && last?.hexes.includes(i)} data-player={o} points={pts(bd.hexes[i].vs)} />
+			{/if}
+		{/each}
+	</g>
 
-	{#each bd.edges as e, i (i)}
-		{#if game.drawn[i] >= 0}
-			<line
-				class="edge"
-				class:last={lastEdges.has(i)}
-				class:draw={ss.fresh && lastEdges.has(i)}
-				x1={bd.verts[e.a].x}
-				y1={bd.verts[e.a].y}
-				x2={bd.verts[e.b].x}
-				y2={bd.verts[e.b].y}
-			/>
-		{/if}
-	{/each}
+	<g class="pencil">
+		{#each strokes as d, i (i)}
+			{#if game.drawn[i] >= 0}
+				<path class="edge" class:last={lastEdges.has(i)} class:draw={ss.fresh && lastEdges.has(i)} {d} />
+			{/if}
+		{/each}
 
-	{#each targets as t (t.other)}
-		<polyline class="hint" points={pts(t.move.path)} />
-	{/each}
+		{#each targets as t (t.other)}
+			<polyline class="preview" points={pts(t.move.path)} />
+		{/each}
 
-	{#each hints as mv, i (i)}
-		<polyline class="hint gold" points={pts(mv.path)} />
-	{/each}
+		<!-- dots out of play (every line at them drawn) are half erased -->
+		{#each bd.verts as v, i (i)}
+			<circle class={dotClass(i)} cx={v.x} cy={v.y} r={(i === sel || i === ss.to ? 4.6 : 3.6) * k} />
+		{/each}
+	</g>
 
-	<!-- Like Triangula, dots out of play (every line at them drawn) fade away. -->
-	{#each bd.verts as v, i (i)}
-		{#if !ss.deadDots.has(i)}
-			<circle class={dotClass(i)} cx={v.x} cy={v.y} r={i === sel || i === ss.to ? 0.13 : 0.1} out:fade />
-		{/if}
-	{/each}
-
-	<!-- as in Triangula, a still ring marks the selected dot (and the robot's second tap) -->
+	<!-- a pencil loop, in the mover's color, marks the selected dot (and the robot's second tap) -->
 	{#each [sel, ss.to].filter((i) => i !== null) as i (i)}
-		<circle class="ring" cx={bd.verts[i].x} cy={bd.verts[i].y} r="0.22" transition:fade={{ duration: 100 }} />
+		<path class="ring" data-player={game.turn} d={loop(i)} transition:fade={{ duration: 100 }} />
 	{/each}
 </svg>
 
@@ -132,16 +187,37 @@
 		cursor: default;
 	}
 
-	.hex {
-		transition: fill 0.3s;
+	.fill1 {
+		color: var(--p1);
+	}
+
+	.fill2 {
+		color: var(--p2);
+	}
+
+	.wash {
+		fill: currentColor;
+		fill-opacity: 0.22;
+	}
+
+	.scribble {
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.6;
+		stroke-linejoin: round;
+		opacity: 0.65;
+	}
+
+	.hexes {
+		filter: url(#b-crayon);
 	}
 
 	.hex[data-player='1'] {
-		fill: var(--fill1);
+		fill: url(#b-fill1);
 	}
 
 	.hex[data-player='2'] {
-		fill: var(--fill2);
+		fill: url(#b-fill2);
 	}
 
 	.fresh {
@@ -150,54 +226,70 @@
 		animation: pop 0.4s ease-out;
 	}
 
+	.pencil {
+		filter: url(#b-pencil);
+	}
+
 	.edge {
-		stroke: #ffffff80;
-		stroke-width: 0.05;
+		fill: none;
+		stroke: var(--line);
+		stroke-width: var(--w-line);
 		stroke-linecap: round;
+		opacity: 0.9;
 	}
 
 	.last {
-		stroke: var(--orange);
+		stroke: var(--last);
+		stroke-width: var(--w-last);
+		opacity: 1;
 	}
 
-	/* lines are 1 unit long, so a 1.2 dash hides the whole line and sliding it in draws it */
+	/* lines are about 1.1 units long, so a 1.3 dash hides the whole line and sliding it in draws it */
 	.draw {
-		stroke-dasharray: 1.2;
-		stroke-dashoffset: 1.2;
+		stroke-dasharray: 1.3;
+		stroke-dashoffset: 1.3;
 		animation: draw 0.3s linear forwards;
 	}
 
-	.hint {
+	/* the selected dot's moves */
+	.preview {
 		fill: none;
-		stroke: #4682b4a0;
-		stroke-width: 0.05;
-		stroke-dasharray: 0.12 0.12;
-	}
-
-	/* hints: moves that close a hex, apart from the blue preview of a selected dot */
-	.gold {
-		stroke: var(--gold);
-		stroke-opacity: 0.45;
+		stroke: #5b5b62;
+		stroke-width: var(--w-line);
+		stroke-dasharray: var(--dash);
+		stroke-linecap: round;
 	}
 
 	.dot {
-		fill: url(#dot-live);
-		transition: opacity 0.2s;
+		fill: var(--ink);
+		transition: opacity 0.4s;
 	}
 
 	/* can't be tapped right now */
 	.gray {
-		fill: url(#dot-gray);
+		fill: #9c9ca2;
 	}
 
 	.selected {
-		fill: url(#dot-selected);
+		fill: var(--last);
+	}
+
+	.dead {
+		opacity: 0.13;
 	}
 
 	.ring {
 		fill: none;
-		stroke: var(--orange);
-		stroke-width: 0.035;
+		stroke-width: var(--w-ring);
+		stroke-linecap: round;
+	}
+
+	.ring[data-player='1'] {
+		stroke: var(--p1);
+	}
+
+	.ring[data-player='2'] {
+		stroke: var(--p2);
 	}
 
 	.shake {

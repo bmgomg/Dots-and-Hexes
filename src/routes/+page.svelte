@@ -1,4 +1,5 @@
 <script>
+	import Defs from '../Defs.svelte';
 	import Frame from '../Frame.svelte';
 	import GamePage from '../Game Page.svelte';
 	import Home from '../Home.svelte';
@@ -35,6 +36,7 @@
 </script>
 
 <div id="app" class="nohi">
+	<Defs />
 	{#if splash}
 		<Splash />
 	{:else}
@@ -52,7 +54,8 @@
 		display: grid;
 		place-content: center;
 		box-sizing: border-box;
-		background: radial-gradient(ellipse 80% 60% at 15% 15%, #3a0060 0%, #1a0035 50%, #080010 100%);
+		/* the desk around the pad */
+		background: #34363a;
 	}
 
 	#app-content {

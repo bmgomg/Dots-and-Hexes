@@ -28,30 +28,30 @@
 </script>
 
 {#if ss.launcher}
-	<div class="launcher" transition:fade={{ duration: 200 }}>
+	<!-- an index card taped to the pad; the choices are circled in blue pencil -->
+	<div class="launcher card" transition:fade={{ duration: 200 }}>
 		<div class="prompt">Select size</div>
 		<div class="ops">
 			{#each SIZES as sz (sz)}
-				<div class="size" class:size-selected={sz === size} onpointerdown={() => (size = sz)}>{sz}</div>
+				<div class="size" class:selected={sz === size} onpointerdown={() => (size = sz)}>{sz}</div>
 			{/each}
 		</div>
-		<span></span>
 		{#if ss.mode.opp === ROBOT}
-			<div class="prompt">Select opponent</div>
-			<div class="ops">
+			<div class="prompt second">Select opponent</div>
+			<div class="ops skills">
 				{#each LEVELS as lv, i (lv)}
-					<div class="skill" class:skill-selected={lv === level} onpointerdown={() => (level = lv)}>
-						<div class="skill-img-wrapper" class:skill-img-wrapper-selected={lv === level}>
-							<div class="skill-img"><Hex size={46} fill="var(--p2)" pips={i + 1} /></div>
-						</div>
+					<div class="skill" class:selected={lv === level} onpointerdown={() => (level = lv)}>
+						<Hex size={46} color="p2" pips={i + 1} />
 						<span>{LEVEL_NAMES[lv]}</span>
 					</div>
 				{/each}
 			</div>
-			<span></span>
 		{/if}
 		<div class="play">
-			<Button big label="Play" onClick={onPlay} />
+			<Button big label="play" onClick={onPlay} />
+			<svg class="underline" viewBox="0 0 100 12" preserveAspectRatio="none" aria-hidden="true">
+				<use href="#underline2" width="100" height="12" />
+			</svg>
 		</div>
 	</div>
 {/if}
@@ -61,97 +61,101 @@
 		place-self: center;
 		grid-area: 3/1;
 		display: grid;
-		gap: 20px;
-		background: #00000060;
+		justify-items: center;
+		gap: 14px;
+		width: 370px;
 		box-sizing: border-box;
-		padding: 30px;
-		border-radius: 20px;
+		padding: 34px 22px 22px;
+		transform: rotate(-1.2deg);
 		z-index: 1;
 	}
 
 	.prompt {
-		z-index: 1;
-		font-size: 22px;
+		justify-self: start;
+		font-size: 16px;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--ink-soft);
+	}
+
+	.second {
+		margin-top: 10px;
 	}
 
 	.ops {
-		place-self: center;
 		display: grid;
 		grid-auto-flow: column;
-		gap: 15px;
-		z-index: 1;
+		gap: 24px;
+	}
+
+	.skills {
+		gap: 6px;
+	}
+
+	.size,
+	.skill {
+		position: relative;
+		color: var(--ink);
+		opacity: 0.5;
+		cursor: pointer;
+		transition: opacity 0.2s;
+	}
+
+	.size:hover,
+	.skill:hover,
+	.selected {
+		opacity: 1;
+	}
+
+	.selected {
+		pointer-events: none;
+	}
+
+	/* a loose loop in blue pencil around the choice */
+	.selected::after {
+		content: '';
+		position: absolute;
+		inset: -2px;
+		border: 2.2px solid var(--p1);
+		border-radius: 52% 46% 55% 44% / 48% 55% 45% 52%;
+		transform: rotate(-6deg);
+		filter: url(#pencil);
+		pointer-events: none;
 	}
 
 	.size {
-		place-self: center;
-		font-size: 24px;
-		height: 50px;
-		aspect-ratio: 1;
-		border-radius: 50%;
+		width: 64px;
+		height: 56px;
 		display: grid;
 		place-content: center;
-		box-sizing: border-box;
-		color: var(--ink);
-		border: 2px solid var(--ink);
-		opacity: 0.6;
-		cursor: pointer;
-		transition: all 0.2s;
-	}
-
-	.size:hover {
-		opacity: 1;
-	}
-
-	.size-selected {
-		opacity: 1;
-		background: #ffffff20;
-		--hi: #fff;
-		color: var(--hi);
-		border: 2px solid var(--hi);
-		pointer-events: none;
+		font-size: 32px;
 	}
 
 	.skill {
-		display: grid;
-		gap: 10px;
-		place-items: center;
+		width: 78px;
+		height: 92px;
 		box-sizing: border-box;
-		color: var(--ink);
-		opacity: 0.6;
-		cursor: pointer;
-		transition: all 0.2s;
-		letter-spacing: 0.1em;
-	}
-
-	.skill-selected {
-		opacity: 1;
-		--hi: #fff;
-		color: var(--hi);
-		pointer-events: none;
-	}
-
-	.skill:hover {
-		opacity: 1;
-	}
-
-	.skill-img-wrapper {
+		padding-top: 8px;
 		display: grid;
-		height: 70px;
-		aspect-ratio: 1;
-		border-radius: 50%;
-		border: 2px solid var(--ink);
-	}
-
-	.skill-img-wrapper-selected {
-		border: 2px solid var(--hi);
-		background: #ffffff20;
-	}
-
-	.skill-img {
-		place-self: center;
+		justify-items: center;
+		align-content: start;
+		gap: 4px;
+		font-size: 14px;
+		white-space: nowrap;
 	}
 
 	.play {
-		place-self: center;
+		margin-top: 8px;
+		display: grid;
+		justify-items: center;
+	}
+
+	.underline {
+		width: 100px;
+		height: 12px;
+		margin-top: -10px;
+		overflow: visible;
+		filter: url(#pencil);
+		pointer-events: none;
 	}
 </style>

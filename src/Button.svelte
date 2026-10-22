@@ -1,5 +1,5 @@
 <script>
-	// A plain text button for the toolbar, launcher and prompts.
+	// A plain handwritten button for the toolbar, launcher and prompts.
 	const { label, big = false, disabled = false, onClick } = $props();
 </script>
 
@@ -8,21 +8,19 @@
 <style>
 	.button {
 		font: inherit;
-		font-size: 16px;
-		letter-spacing: 0.04em;
+		font-size: 17px;
 		color: var(--ink);
-		background: #ffffff10;
-		border: 1px solid var(--line);
-		border-radius: 10px;
-		padding: 8px 14px;
+		background: transparent;
+		border: 0;
+		min-height: 44px;
+		padding: 0 11px;
 		cursor: pointer;
-		transition:
-			scale 0.1s,
-			background-color 0.2s;
+		transition: scale 0.1s;
 	}
 
+	/* a thin highlighter line under the word */
 	.button:hover {
-		background: #ffffff20;
+		background: linear-gradient(180deg, transparent 62%, var(--gold) 62%, var(--gold) 80%, transparent 80%);
 	}
 
 	.button:active {
@@ -30,20 +28,13 @@
 	}
 
 	.button:disabled {
-		opacity: 0.35;
+		opacity: 0.3;
 		pointer-events: none;
 	}
 
 	.big {
-		font-size: 22px;
-		padding: 10px 28px;
-		border-radius: 999px;
-		background: var(--bg);
-		border: 2px solid var(--ink);
-		box-shadow: 0 4px 12px #000000a0;
-	}
-
-	.big:hover {
-		background: #3a0060;
+		font-size: 30px;
+		min-height: 56px;
+		padding: 0 18px;
 	}
 </style>

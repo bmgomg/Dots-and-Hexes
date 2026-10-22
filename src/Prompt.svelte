@@ -19,7 +19,7 @@
 
 {#if !ss.launcher && ss.game && on}
 	{#key ss.prompt}
-		<div class="prompt grid" in:fade|global={{ delay }} out:fade>
+		<div class="prompt grid card" in:fade|global={{ delay }} out:fade>
 			{#if ss.prompt === PROMPT_RESET_STATS}
 				<Button big label={ss.prompt} onClick={ss.resetStats} />
 				<Button big label={PROMPT_NO} onClick={dismiss} />
@@ -39,6 +39,9 @@
 	.prompt {
 		grid-area: 3/1;
 		place-self: center;
-		gap: 20px;
+		gap: 6px;
+		padding: 10px 8px;
+		/* a card taped over the board */
+		transform: rotate(1.5deg);
 	}
 </style>

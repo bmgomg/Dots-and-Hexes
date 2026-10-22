@@ -23,22 +23,13 @@
 		ss.prompt = prompt;
 		ss.sel = null;
 	};
-
-	const onHints = () => {
-		ss.showHints = !ss.showHints;
-		ss.persistCommon();
-	};
-
-	const onOff = (on) => (on ? 'on' : 'off');
 </script>
 
 <div class="toolbar">
 	<div class="row">
 		<Button label="back" onClick={onBack} disabled={noBack} />
 		<Button label="resign" onClick={() => setPrompt(PROMPT_RESIGN)} disabled={noResign} />
-		<Button label="reset stats" onClick={() => setPrompt(PROMPT_RESET_STATS)} disabled={noResetStats} />
-		<Button label="hints {onOff(ss.showHints)}" onClick={onHints} />
-	</div>
+		<Button label="reset stats" onClick={() => setPrompt(PROMPT_RESET_STATS)} disabled={noResetStats} />	</div>
 </div>
 
 <style>
@@ -52,6 +43,6 @@
 		display: grid;
 		grid-auto-flow: column;
 		place-content: center;
-		gap: 8px;
+		gap: 4px;
 	}
 </style>
