@@ -6,6 +6,7 @@
 	import { ss } from './shared.svelte';
 	import { _sound, tap } from './sound.svelte';
 	import Button from './Button.svelte';
+	import Title from './Title.svelte';
 
 	let size = $derived(ss.mode.size);
 	let level = $derived(ss.mode.level);
@@ -63,46 +64,56 @@
 </script>
 
 {#if ss.launcher}
-	<!-- an index card taped to the pad; the choices are circled in blue pencil -->
-	<div class="launcher card" transition:fade={{ duration: 200 }}>
-		<div class="prompt">Select size</div>
-		<div class="ops">
-			{#each SIZES as sz (sz)}
-				{@const sk = sketches[sz]}
-				<div class="size" class:selected={sz === size} onpointerdown={() => onSize(sz)}>
-					<svg class="sketch" viewBox={sk.view} width={sk.width} height={sk.height} aria-hidden="true">
-						{#each sk.hexes as points, i (i)}
-							<polygon {points} />
-						{/each}
-					</svg>
-					<span>{sz}</span>
-				</div>
-			{/each}
-		</div>
-		{#if ss.mode.opp === ROBOT}
-			<div class="prompt second">Select opponent</div>
-			<div class="ops skills">
-				{#each LEVELS as lv, i (lv)}
-					<div class="skill" class:selected={lv === level} onpointerdown={() => onLevel(lv)}>
-						<Hex size={46} color="p2" pips={i + 1} />
-						<span>{LEVEL_NAMES[lv]}</span>
+	<div class="launcher-page" transition:fade={{ duration: 200 }}>
+		<Title />
+		<!-- an index card taped to the pad; the choices are circled in blue pencil -->
+		<div class="launcher card">
+			<div class="prompt">Select size</div>
+			<div class="ops">
+				{#each SIZES as sz (sz)}
+					{@const sk = sketches[sz]}
+					<div class="size" class:selected={sz === size} onpointerdown={() => onSize(sz)}>
+						<svg class="sketch" viewBox={sk.view} width={sk.width} height={sk.height} aria-hidden="true">
+							{#each sk.hexes as points, i (i)}
+								<polygon {points} />
+							{/each}
+						</svg>
+						<span>{sz}</span>
 					</div>
 				{/each}
 			</div>
-		{/if}
-		<div class="play">
-			<Button big label="play" onClick={onPlay} />
-			<svg class="underline" viewBox="0 0 100 12" preserveAspectRatio="none" aria-hidden="true">
-				<use href="#underline2" width="100" height="12" />
-			</svg>
+			{#if ss.mode.opp === ROBOT}
+				<div class="prompt second">Select opponent</div>
+				<div class="ops skills">
+					{#each LEVELS as lv, i (lv)}
+						<div class="skill" class:selected={lv === level} onpointerdown={() => onLevel(lv)}>
+							<Hex size={46} color="p2" pips={i + 1} />
+							<span>{LEVEL_NAMES[lv]}</span>
+						</div>
+					{/each}
+				</div>
+			{/if}
+			<div class="play">
+				<Button big label="play" onClick={onPlay} />
+				<svg class="underline" viewBox="0 0 100 12" preserveAspectRatio="none" aria-hidden="true">
+					<use href="#underline2" width="100" height="12" />
+				</svg>
+			</div>
 		</div>
 	</div>
 {/if}
 
 <style>
-	.launcher {
+	.launcher-page {
 		place-self: center;
 		grid-area: 3/1;
+		display: grid;
+		justify-items: center;
+		gap: 30px;
+		z-index: 1;
+	}
+
+	.launcher {
 		display: grid;
 		justify-items: center;
 		gap: 14px;
@@ -110,7 +121,6 @@
 		box-sizing: border-box;
 		padding: 34px 22px 22px;
 		transform: rotate(-1.2deg);
-		z-index: 1;
 	}
 
 	.prompt {

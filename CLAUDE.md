@@ -11,7 +11,7 @@ cards taped on for the launcher and prompts. No images except the BMG splash. Th
 
 ## Screens and flow (as in Triangula)
 
-Splash (BMG) → Home (title, tagline, rules, "play with friend" / "play against ai") → Launcher (size 7/13/19, each with a pencil sketch of its board at one scale;
+Splash (BMG) → Home (title, tagline, rules, "play with friend" / "play against ai") → Launcher (the title above the card; size 7/13/19, each with a pencil sketch of its board at one scale;
 robot level easy / not easy / hard / killer; ids `easy medium hard killer`) → Game page: stats row, scoreboard (avatar, score, pie, score, avatar), board,
 message band, prompts, toolbar (back, resign, reset stats, sfx, music).
 

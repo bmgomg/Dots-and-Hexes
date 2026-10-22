@@ -2,6 +2,7 @@
 	import { fade } from 'svelte/transition';
 	import { onMount } from 'svelte';
 	import Option from './Home Option.svelte';
+	import Title from './Title.svelte';
 	import { ss } from './shared.svelte';
 
 	onMount(ss.loadCommon);
@@ -12,10 +13,7 @@
 
 {#if ss.home}
 	<div class="home ga11 nohi" in:fade={{ duration: 200 }}>
-		<div class="title"><span class="p1">Dots</span> &amp; <span class="p2">Hexes</span></div>
-		<svg class="underline" viewBox="0 0 100 12" preserveAspectRatio="none" aria-hidden="true">
-			<use href="#underline2" width="100" height="12" />
-		</svg>
+		<Title />
 		<div class="tagline">Draw two. <span class="hl">Close a hex. Go again.</span></div>
 		{#snippet bullet(text, i)}
 			<div class="bullet-item">
@@ -48,31 +46,6 @@
 		display: grid;
 		z-index: 1;
 		place-content: center;
-	}
-
-	.title {
-		justify-self: center;
-		font-size: 54px;
-		line-height: 1.1;
-		letter-spacing: 0.02em;
-		transform: rotate(-1.5deg);
-	}
-
-	.p1 {
-		color: var(--p1);
-	}
-
-	.p2 {
-		color: #c4650f;
-	}
-
-	.underline {
-		justify-self: center;
-		width: 300px;
-		height: 12px;
-		margin-top: 2px;
-		overflow: visible;
-		filter: url(#pencil);
 	}
 
 	.tagline {
