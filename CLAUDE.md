@@ -1,6 +1,6 @@
 # Dots and Hexes
 
-_Draw two. Close a hex. Go again._ (working tagline)
+_Close a hex, go again — two lines at a time._ (working tagline)
 
 Two-player dots-and-boxes on hexes; every move draws two lines. Prototyped as a single HTML artifact in claude.ai,
 now a SvelteKit app with Triangula's structure and flow, but its own look: paper and pencil, like the classic

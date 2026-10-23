@@ -15,7 +15,7 @@
 {#if ss.home}
 	<div class="home ga11 nohi" in:fade={SCREEN_IN} out:fade={SCREEN_OUT}>
 		<Title spacer />
-		<div class="tagline">Draw two. <span class="hl">Close a hex. Go again.</span></div>
+		<div class="tagline">Close a hex, go again — <span class="hl">two lines at a time.</span></div>
 		{#snippet bullet(text, i)}
 			<div class="bullet-item">
 				<svg class="bullet" class:odd={i % 2} viewBox="0 0 12 12" aria-hidden="true">
@@ -53,7 +53,7 @@
 	.tagline {
 		justify-self: center;
 		margin-top: 16px;
-		font-size: 21px;
+		font-size: 19px;
 	}
 
 	.bullets {

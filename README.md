@@ -1,6 +1,6 @@
 # Dots and Hexes
 
-_Draw two. Close a hex. Go again._ (working tagline)
+_Close a hex, go again — two lines at a time._ (working tagline)
 
 Dots and boxes on a hex board: every move draws two connected lines at once.
 
