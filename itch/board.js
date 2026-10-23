@@ -13,13 +13,30 @@ const add = (parent, tag, attrs = {}) => {
 	return el;
 };
 
-// the pixel-sized defs of src/Defs.svelte that the title's underline and the grain use
+// the pixel-sized defs of src/Defs.svelte that the pages use: the pencil and grain filters, the walnut desk,
+// the title's underline
 export const addDefs = () => {
 	const svg = add(document.body, 'svg', { width: 0, height: 0, style: 'position:absolute' });
 	svg.innerHTML = `<defs>
 		<filter id="pencil" x="-10%" y="-10%" width="120%" height="120%">
 			<feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="9" result="n" />
 			<feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" xChannelSelector="R" yChannelSelector="G" />
+		</filter>
+		<!-- The walnut desk: noise stretched along x into broad streaks, tinted brown, fine dark
+		     grain over it, and the whole bent by slow waves so the grain curves like real wood. -->
+		<filter id="wood" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">
+			<feTurbulence type="fractalNoise" baseFrequency="0.002 0.03" numOctaves="4" seed="3" result="broad" />
+			<feColorMatrix
+				in="broad"
+				type="matrix"
+				values="0.35 0 0 0 0.155  0.25 0 0 0 0.1125  0.17 0 0 0 0.0825  0 0 0 0 1"
+				result="tone"
+			/>
+			<feTurbulence type="fractalNoise" baseFrequency="0.004 0.9" numOctaves="2" seed="8" result="fine" />
+			<feColorMatrix in="fine" type="matrix" values="0 0 0 0 0.1  0 0 0 0 0.065  0 0 0 0 0.04  -3 0 0 0 1.55" result="lines" />
+			<feComposite in="lines" in2="tone" operator="over" result="flat" />
+			<feTurbulence type="fractalNoise" baseFrequency="0.0025 0.006" numOctaves="2" seed="11" result="warp" />
+			<feDisplacementMap in="flat" in2="warp" scale="45" xChannelSelector="R" yChannelSelector="G" />
 		</filter>
 		<filter id="grain">
 			<feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="3" stitchTiles="stitch" />

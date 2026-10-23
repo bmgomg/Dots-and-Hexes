@@ -19,6 +19,6 @@ render "Cover.html#cover" 630 500 2 "Cover-2x.png"
 render "Cover.html#embed" 640 360 1 "Embed BG.png"
 render rules.html 450 390 1 "Rules.png"
 render rules.html 450 390 2 "Rules-2x.png"
-# the sheet taped down, on a transparent background
-render "rules.html#taped" 500 450 1 "Rules-taped.png" --default-background-color=00000000
-render "rules.html#taped" 500 450 2 "Rules-taped-2x.png" --default-background-color=00000000
+# the sheet taped down on the walnut desk
+render "rules.html#taped" 500 450 1 "Rules-taped.png"
+render "rules.html#taped" 500 450 2 "Rules-taped-2x.png"
