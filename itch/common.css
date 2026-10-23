@@ -1,0 +1,112 @@
+/* Shared by the itch.io images: the game's font, colors and graph pad (src/routes/+layout.svelte, src/Frame.svelte) */
+@font-face {
+	font-family: AD;
+	src: url('../src/lib/fonts/Architects Daughter.woff2') format('woff2');
+}
+
+:root {
+	--bg: #f1f5ea;
+	--grid-major: #c3d6b3;
+	--grid-minor: #dde8d3;
+	--ink: #2f2f34;
+	--ink-soft: #55555b;
+	--line: #4a4a50;
+	--last: #1a1a1e;
+	--p1: #2a63c4;
+	--p2: #e07a1f;
+	--p2-text: #b85d0c;
+	--gold: rgba(255, 216, 58, 0.62);
+	--desk: #4a3a2e;
+}
+
+html,
+body {
+	margin: 0;
+	overflow: hidden;
+}
+
+body {
+	position: relative;
+	font-family: AD, 'Comic Sans MS', cursive;
+	color: var(--ink);
+}
+
+/* the graph pad */
+.pad {
+	position: absolute;
+	inset: 0;
+	background-color: var(--bg);
+	background-image:
+		linear-gradient(90deg, var(--grid-major) 1px, transparent 1px), linear-gradient(180deg, var(--grid-major) 1px, transparent 1px),
+		linear-gradient(90deg, var(--grid-minor) 1px, transparent 1px), linear-gradient(180deg, var(--grid-minor) 1px, transparent 1px);
+	background-size:
+		50px 50px,
+		50px 50px,
+		10px 10px,
+		10px 10px;
+}
+
+.pad .grain {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+}
+
+/* a highlighter stroke behind text */
+.hl {
+	background: linear-gradient(180deg, transparent 34%, var(--gold) 34%, var(--gold) 82%, transparent 82%);
+	box-decoration-break: clone;
+	-webkit-box-decoration-break: clone;
+}
+
+/* the title, as on Home (src/Title.svelte) */
+.title-block {
+	position: absolute;
+	display: grid;
+	justify-items: center;
+	translate: -50% 0;
+}
+
+.title {
+	line-height: 1.1;
+	letter-spacing: 0.02em;
+	white-space: nowrap;
+	transform: rotate(-1.5deg);
+}
+
+.title .p1 {
+	color: var(--p1);
+}
+
+.title .p2 {
+	color: #c4650f;
+}
+
+.underline {
+	overflow: visible;
+	filter: url(#pencil);
+}
+
+.u1,
+.u2 {
+	fill: none;
+	stroke-linecap: round;
+	vector-effect: non-scaling-stroke;
+}
+
+.u1 {
+	stroke: var(--p1);
+	stroke-width: 2.2;
+}
+
+.u2 {
+	stroke: var(--p2);
+	stroke-width: 2;
+}
+
+.tagline {
+	position: absolute;
+	translate: -50% 0;
+	white-space: nowrap;
+}

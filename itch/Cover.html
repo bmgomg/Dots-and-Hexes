@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>Dots and Hexes cover</title>
+		<!-- itch.io art, rendered by render.sh. Layouts:
+	     #cover  630×500  cover image (default)
+	     #embed  640×360  Embed BG: itch's placeholder for "Click to launch in fullscreen", shown at actual size
+	                      behind the Run game button, so the middle stays clear
+	     #embed-preview   the same, with a stand-in Run game button to check the layout
+	     The board is a seeded game stopped mid-way (GAME below). -->
+		<link rel="stylesheet" href="common.css" />
+		<style>
+			#board {
+				position: absolute;
+			}
+
+			.run {
+				position: absolute;
+				left: 50%;
+				top: 50%;
+				translate: -50% -50%;
+				width: 145px;
+				height: 49px;
+				display: grid;
+				place-content: center;
+				border-radius: 3px;
+				background: #fa5c5c;
+				color: white;
+				font: bold 19px sans-serif;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="pad">
+			<svg class="grain"><rect width="100%" height="100%" filter="url(#grain)" /></svg>
+		</div>
+		<svg id="board" xmlns="http://www.w3.org/2000/svg"></svg>
+		<div class="title-block">
+			<div class="title"><span class="p1">Dots</span> &amp; <span class="p2">Hexes</span></div>
+			<svg class="underline" viewBox="0 0 100 12" preserveAspectRatio="none"><use href="#underline2" width="100" height="12" /></svg>
+		</div>
+		<div class="tagline"></div>
+
+		<script type="module">
+			import { addDefs, drawBoard, playGame } from './board.js';
+
+			// board: its left/top and width in px; title and tagline centered on titleX; stacked: the tagline in two lines
+			const LAYOUTS = {
+				cover: {
+					W: 630,
+					H: 500,
+					BX: 205,
+					BY: 46,
+					BW: 220,
+					titleX: 315,
+					titleTop: 318,
+					titleSize: 64,
+					lineW: 340,
+					taglineTop: 418,
+					taglineSize: 24
+				},
+				embed: {
+					W: 640,
+					H: 360,
+					BX: 46,
+					BY: 72,
+					BW: 190,
+					titleX: 516,
+					titleTop: 71,
+					titleSize: 50,
+					lineW: 170,
+					taglineTop: 231,
+					taglineSize: 19,
+					stacked: true
+				}
+			};
+
+			// the game on the board: size, seed, and how many moves in (?size=&seed=&moves= override, for trying others)
+			const q = new URLSearchParams(location.search);
+			const GAME = { size: +(q.get('size') ?? 13), seed: +(q.get('seed') ?? 2), moves: +(q.get('moves') ?? 20) };
+
+			const hash = location.hash.slice(1);
+			const L = LAYOUTS[hash.split('-')[0]] ?? LAYOUTS.cover;
+			Object.assign(document.body.style, { width: L.W + 'px', height: L.H + 'px' });
+			addDefs();
+
+			const games = playGame(GAME.size, GAME.seed, GAME.moves);
+			const board = document.getElementById('board');
+			Object.assign(board.style, { left: L.BX + 'px', top: L.BY + 'px' });
+			drawBoard(board, games.at(-1), L.BW);
+			window.games = games; // for cover-gif.mjs, later
+
+			const block = document.querySelector('.title-block');
+			Object.assign(block.style, { left: L.titleX + 'px', top: L.titleTop + 'px' });
+			const title = document.querySelector('.title');
+			title.style.fontSize = L.titleSize + 'px';
+			if (L.stacked) title.innerHTML = '<div class="p1">Dots &amp;</div><div class="p2">Hexes</div>';
+			if (L.stacked) title.querySelector('.p1').innerHTML = '<span class="p1">Dots</span> <span style="color: var(--ink)">&amp;</span>';
+			title.style.textAlign = 'center';
+			Object.assign(document.querySelector('.underline').style, { width: L.lineW + 'px', height: '12px' });
+
+			const tagline = document.querySelector('.tagline');
+			tagline.innerHTML = L.stacked
+				? 'Draw two.<br><span class="hl">Close a hex. Go again.</span>'
+				: 'Draw two. <span class="hl">Close a hex. Go again.</span>';
+			Object.assign(tagline.style, {
+				left: L.titleX + 'px',
+				top: L.taglineTop + 'px',
+				fontSize: L.taglineSize + 'px',
+				textAlign: 'center',
+				lineHeight: 1.5
+			});
+
+			if (hash.endsWith('-preview')) {
+				document.body.insertAdjacentHTML('beforeend', '<div class="run">Run game</div>');
+			}
+		</script>
+	</body>
+</html>
