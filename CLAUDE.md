@@ -59,6 +59,10 @@ message band, prompts, toolbar (back, resign, reset stats, sfx, music).
 - `npm run build:itch` — `scripts/build-itch.js` (Triangula's, plus `icons` in its drop list): a static build in Vite's
   `itch` mode into `build-itch/`, without the manifest, install icons and app-install head tags, zipped as
   `build-itch/bitch.zip` to upload.
+- itch.io page art is in `itch/`, as in Patch Through: `Cover.html` (`#cover` 630×500, `#embed` 640×360 with the middle
+  clear for the Run game button, `#embed-preview` with a stand-in button) and `rules.html` (450×390), drawn with the
+  game's look by `board.js` from a seeded game played with `src/engine.js` (13 hexes, seed 2, 20 moves).
+  `sh itch/render.sh` renders the PNGs (headless Edge or Chrome), `node itch/cover-gif.mjs` the GIFs (Chrome and ffmpeg).
 
 ## Rules (agreed in the prototype)
 

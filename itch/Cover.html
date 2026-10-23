@@ -8,10 +8,10 @@
 	     #embed  640×360  Embed BG: itch's placeholder for "Click to launch in fullscreen", shown at actual size
 	                      behind the Run game button, so the middle stays clear
 	     #embed-preview   the same, with a stand-in Run game button to check the layout
-	     The board is a seeded game stopped mid-way (GAME below). -->
+	     The board is a seeded game stopped mid-way (GAME below); cover-gif.mjs plays it out with drawFrame. -->
 		<link rel="stylesheet" href="common.css" />
 		<style>
-			#board {
+			.board {
 				position: absolute;
 			}
 
@@ -36,7 +36,8 @@
 		<div class="pad">
 			<svg class="grain"><rect width="100%" height="100%" filter="url(#grain)" /></svg>
 		</div>
-		<svg id="board" xmlns="http://www.w3.org/2000/svg"></svg>
+		<svg id="board0" class="board" xmlns="http://www.w3.org/2000/svg"></svg>
+		<svg id="board" class="board" xmlns="http://www.w3.org/2000/svg"></svg>
 		<div class="title-block">
 			<div class="title"><span class="p1">Dots</span> &amp; <span class="p2">Hexes</span></div>
 			<svg class="underline" viewBox="0 0 100 12" preserveAspectRatio="none"><use href="#underline2" width="100" height="12" /></svg>
@@ -88,9 +89,20 @@
 
 			const games = playGame(GAME.size, GAME.seed, GAME.moves);
 			const board = document.getElementById('board');
-			Object.assign(board.style, { left: L.BX + 'px', top: L.BY + 'px' });
-			drawBoard(board, games.at(-1), L.BW);
-			window.games = games; // for cover-gif.mjs, later
+			const board0 = document.getElementById('board0');
+			for (const svg of [board, board0]) Object.assign(svg.style, { left: L.BX + 'px', top: L.BY + 'px' });
+
+			// One frame of the animation, for cover-gif.mjs: games[i], its last move drawn up to grow and its new hexes
+			// popped in up to pop; fade crossfades from it to the empty board, where the GIF starts again.
+			window.drawFrame = ({ i = games.length - 1, grow = 1, pop = 1, fade = 0 } = {}) => {
+				drawBoard(board, games[i], L.BW, { grow, pop });
+				board.style.opacity = 1 - fade;
+				board0.style.opacity = fade;
+			};
+			window.games = games;
+
+			drawBoard(board0, games[0], L.BW);
+			drawFrame();
 
 			const block = document.querySelector('.title-block');
 			Object.assign(block.style, { left: L.titleX + 'px', top: L.titleTop + 'px' });

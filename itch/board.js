@@ -79,7 +79,9 @@ const wob = (i, j) => {
 };
 
 // Draws game g on svg, which is width px wide (its height follows the board's shape).
-export const drawBoard = (svg, g, width, { last = true } = {}) => {
+// For animation: grow (0 to 1) draws the last move's lines along its path, as the pencil goes from dot to
+// dot, and pop (0 to 1) brings in the hexes it closed, growing from 0.4 as in the game.
+export const drawBoard = (svg, g, width, { last = true, grow = 1, pop = 1 } = {}) => {
 	const bd = boardOf(g.size);
 	const [x0, y0, vw, vh] = bd.view;
 	const k = vw / width;
@@ -114,10 +116,24 @@ export const drawBoard = (svg, g, width, { last = true } = {}) => {
 	const pts = (vs) => vs.map((i) => `${bd.verts[i].x},${bd.verts[i].y}`).join(' ');
 
 	const hexes = add(svg, 'g', { filter: 'url(#b-crayon)' });
-	g.owner.forEach((o, i) => o > 0 && add(hexes, 'polygon', { points: pts(bd.hexes[i].vs), fill: `url(#b-fill${o})` }));
+	const fresh = new Set(g.last?.hexes ?? []);
+
+	g.owner.forEach((o, i) => {
+		if (o <= 0 || (fresh.has(i) && pop <= 0)) return;
+		const poly = add(hexes, 'polygon', { points: pts(bd.hexes[i].vs), fill: `url(#b-fill${o})` });
+
+		if (fresh.has(i) && pop < 1) {
+			const c = bd.hexes[i].vs.reduce((m, v) => ({ x: m.x + bd.verts[v].x / 6, y: m.y + bd.verts[v].y / 6 }), { x: 0, y: 0 });
+			const s = 0.4 + 0.6 * pop;
+			poly.setAttribute('transform', `translate(${c.x} ${c.y}) scale(${s}) translate(${-c.x} ${-c.y})`);
+			poly.setAttribute('opacity', pop);
+		}
+	});
 
 	const pencil = add(svg, 'g', { filter: 'url(#b-pencil)' });
 	const lastEdges = new Set(last && !g.over ? (g.last?.edges ?? []) : []);
+	// the last move's lines in drawing order, each with the dot it starts from
+	const order = (g.last?.edges ?? []).map((e, j) => ({ e, from: g.last.path[j] }));
 
 	bd.edges.forEach((e, i) => {
 		if (g.drawn[i] < 0) return;
@@ -133,7 +149,13 @@ export const drawBoard = (svg, g, width, { last = true } = {}) => {
 		const y2 = b.y + uy * o2 + wob(i, 5) * k;
 		const bow = 5 * wob(i, 6) * k;
 		const hard = lastEdges.has(i);
-		add(pencil, 'path', {
+		const j = order.findIndex((x) => x.e === i);
+		// how much of this line is drawn yet: the move's lines go one after the other
+		const part = j < 0 ? 1 : Math.min(1, Math.max(0, grow * order.length - j));
+
+		if (part <= 0) return;
+
+		const path = add(pencil, 'path', {
 			d: `M${n(x1)} ${n(y1)}Q${n((x1 + x2) / 2 - uy * bow)} ${n((y1 + y2) / 2 + ux * bow)} ${n(x2)} ${n(y2)}`,
 			fill: 'none',
 			style: `stroke: var(${hard ? '--last' : '--line'})`,
@@ -141,6 +163,13 @@ export const drawBoard = (svg, g, width, { last = true } = {}) => {
 			'stroke-linecap': 'round',
 			opacity: hard ? 1 : 0.9
 		});
+
+		if (part < 1) {
+			// drawn from the dot the move starts at: from e.a forward, or from e.b back
+			path.setAttribute('pathLength', 1);
+			path.setAttribute('stroke-dasharray', `${part} 2`);
+			if (order[j].from !== e.a) path.setAttribute('stroke-dashoffset', -(1 - part));
+		}
 	});
 
 	const dead = deadDots(bd, g);
