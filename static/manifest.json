@@ -1,7 +1,7 @@
 {
 	"name": "Dots and Hexes",
 	"short_name": "Dots & Hexes",
-	"description": "Like dots and boxes, but with hexes — every move draws two lines.",
+	"description": "Close a hex, go again — two lines at a time. Classic dots and boxes, reimagined.",
 	"start_url": "/",
 	"scope": "/",
 	"display": "standalone",
