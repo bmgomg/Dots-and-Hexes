@@ -24,7 +24,7 @@ const sprite = {
 	won: [12680, 2010]
 };
 
-const MUSIC_VOLUMES = [0, 0.2, 0.4, 0.6, 0.8];
+const MUSIC_VOLUMES = [0, 0.4, 0.6, 0.8, 1];
 
 const howl = new Howl({ src: [sounds], sprite });
 const loop = new Howl({ src: [music], loop: true });
