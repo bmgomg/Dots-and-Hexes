@@ -8,9 +8,9 @@ BROWSER="/c/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"
 DIR="$(pwd -W)"
 URL="file:///$(echo "$DIR" | sed 's/ /%20/g; s/•/%E2%80%A2/g')"
 
-render() { # page width height scale output
+render() { # page width height scale output [more browser flags]
 	"$BROWSER" --headless=new --disable-gpu --hide-scrollbars --force-device-scale-factor="$4" \
-		--allow-file-access-from-files --virtual-time-budget=3000 \
+		--allow-file-access-from-files --virtual-time-budget=3000 $6 \
 		--window-size="$2,$3" --screenshot="$DIR/$5" "$URL/$1" 2>/dev/null
 }
 
@@ -19,3 +19,6 @@ render "Cover.html#cover" 630 500 2 "Cover-2x.png"
 render "Cover.html#embed" 640 360 1 "Embed BG.png"
 render rules.html 450 390 1 "Rules.png"
 render rules.html 450 390 2 "Rules-2x.png"
+# the sheet taped down, on a transparent background
+render "rules.html#taped" 500 450 1 "Rules-taped.png" --default-background-color=00000000
+render "rules.html#taped" 500 450 2 "Rules-taped-2x.png" --default-background-color=00000000

@@ -4,7 +4,9 @@
 		<meta charset="utf-8" />
 		<title>Dots and Hexes rules</title>
 		<!-- The home page's rules, for the itch.io description: styled as in src/Home.svelte, on the graph pad.
-	     render.sh renders it at the size of .canvas (450×390) -->
+	     render.sh renders it at the size of .canvas (450×390).
+	     #taped: the same sheet, a little askew, stuck down with two strips of clear tape across its top corners,
+	     on a transparent background (rendered at 500×450), so it sits on whatever color the itch page has -->
 		<link rel="stylesheet" href="common.css" />
 		<style>
 			.canvas {
@@ -32,6 +34,40 @@
 				display: grid;
 				grid: auto / 13px 1fr;
 				gap: 11px;
+			}
+
+			/* #taped */
+			body.taped {
+				width: 500px;
+				height: 450px;
+				background: transparent;
+				display: grid;
+				place-content: center;
+			}
+
+			.taped .canvas {
+				rotate: -1.2deg;
+				box-shadow:
+					0 1px 1px #00000014,
+					0 10px 18px -8px #1e321460;
+			}
+
+			/* clear tape: a faint gray film with a sheen along it, edges that catch the light, torn ends */
+			.tape {
+				position: absolute;
+				width: 104px;
+				height: 30px;
+				background: linear-gradient(
+					180deg,
+					rgba(250, 250, 244, 0.62),
+					rgba(222, 222, 214, 0.34) 30%,
+					rgba(214, 214, 205, 0.3) 70%,
+					rgba(245, 245, 238, 0.55)
+				);
+				border-block: 1px solid rgba(140, 140, 130, 0.35);
+				box-shadow:
+					inset 0 1px 0 rgba(255, 255, 255, 0.7),
+					0 1px 2px rgba(0, 0, 0, 0.12);
 			}
 
 			.bullet {
@@ -68,6 +104,28 @@
 			import { addDefs } from './board.js';
 
 			addDefs();
+
+			if (location.hash === '#taped') {
+				document.body.classList.add('taped');
+				const canvas = document.querySelector('.canvas');
+
+				// torn ends: small zigzags across each short side
+				const teeth = 6;
+				const end = (x, dir) =>
+					Array.from({ length: teeth * 2 + 1 }, (_, i) => `${x + (i % 2 ? dir * 3 : 0)}px ${(i * 100) / (teeth * 2)}%`);
+				const clip = `polygon(${[...end(0, 1), ...end(104, -1).reverse()].join(', ')})`;
+
+				// centered on the two top corners, half on the sheet and half off
+				for (const [left, angle] of [
+					[-34, -38],
+					[380, 38]
+				]) {
+					const tape = document.createElement('div');
+					tape.className = 'tape';
+					Object.assign(tape.style, { left: left + 'px', top: '4px', rotate: angle + 'deg', clipPath: clip });
+					canvas.appendChild(tape);
+				}
+			}
 
 			// as on Home; the hexagon bullets alternate blue and orange
 			const RULES = [
