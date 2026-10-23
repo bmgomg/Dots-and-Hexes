@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>Dots and Hexes desk</title>
+		<!-- The game's walnut desk (the #wood filter of src/Defs.svelte, via board.js), for the itch.io page
+	     background. render.sh renders it at the window's size (2560×1440). -->
+		<link rel="stylesheet" href="common.css" />
+		<style>
+			body {
+				width: 100vw;
+				height: 100vh;
+				background: var(--desk);
+			}
+
+			.desk {
+				position: absolute;
+				inset: 0;
+				width: 100%;
+				height: 100%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<svg class="desk"><rect width="100%" height="100%" filter="url(#wood)" /></svg>
+
+		<script type="module">
+			import { addDefs } from './board.js';
+
+			addDefs();
+		</script>
+	</body>
+</html>

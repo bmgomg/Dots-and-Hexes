@@ -19,6 +19,8 @@ render "Cover.html#cover" 630 500 2 "Cover-2x.png"
 render "Cover.html#embed" 640 360 1 "Embed BG.png"
 render rules.html 450 390 1 "Rules.png"
 render rules.html 450 390 2 "Rules-2x.png"
-# the sheet taped down on the walnut desk
-render "rules.html#taped" 500 450 1 "Rules-taped.png"
-render "rules.html#taped" 500 450 2 "Rules-taped-2x.png"
+# the sheet taped down, on transparency, to lay over the itch.io page's desk
+render "rules.html#taped" 540 480 1 "Rules-taped.png" --default-background-color=00000000
+render "rules.html#taped" 540 480 2 "Rules-taped-2x.png" --default-background-color=00000000
+# the walnut desk, for the itch.io page background
+render Desk.html 2560 1440 1 "Desk.png"

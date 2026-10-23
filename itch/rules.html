@@ -6,7 +6,8 @@
 		<!-- The home page's rules, for the itch.io description: styled as in src/Home.svelte, on the graph pad.
 	     render.sh renders it at the size of .canvas (450×390).
 	     #taped: the same sheet, a little askew, stuck down with two strips of clear tape across its top corners,
-	     on the game's walnut desk (rendered at 500×450) -->
+	     on a transparent background, for the itch.io page's own desk (rendered at 540×480, room for the tape ends
+	     and the shadow) -->
 		<link rel="stylesheet" href="common.css" />
 		<style>
 			.canvas {
@@ -38,19 +39,10 @@
 
 			/* #taped */
 			body.taped {
-				width: 500px;
-				height: 450px;
-				background: var(--desk);
+				width: 540px;
+				height: 480px;
 				display: grid;
 				place-content: center;
-			}
-
-			/* the walnut desk, as in src/routes/+page.svelte */
-			.desk {
-				position: absolute;
-				inset: 0;
-				width: 100%;
-				height: 100%;
 			}
 
 			.taped .canvas {
@@ -115,7 +107,6 @@
 
 			if (location.hash === '#taped') {
 				document.body.classList.add('taped');
-				document.body.insertAdjacentHTML('afterbegin', '<svg class="desk"><rect width="100%" height="100%" filter="url(#wood)" /></svg>');
 				const canvas = document.querySelector('.canvas');
 
 				// torn ends: small zigzags across each short side
