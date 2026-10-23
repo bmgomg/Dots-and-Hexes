@@ -65,10 +65,10 @@
 
 	@keyframes rock {
 		from {
-			transform: rotate(-8deg);
+			transform: rotate(-18deg);
 		}
 		to {
-			transform: rotate(8deg);
+			transform: rotate(18deg);
 		}
 	}
 
