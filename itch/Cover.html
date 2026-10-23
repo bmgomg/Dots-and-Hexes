@@ -8,7 +8,7 @@
 	     #embed  640×360  Embed BG: itch's placeholder for "Click to launch in fullscreen", shown at actual size
 	                      behind the Run game button, so the middle stays clear
 	     #embed-preview   the same, with a stand-in Run game button to check the layout
-	     The board is a seeded game stopped mid-way (GAME below); cover-gif.mjs plays it out with drawFrame. -->
+	     The board is a seeded game stopped mid-way (each layout's game below); cover-gif.mjs plays it out with drawFrame. -->
 		<link rel="stylesheet" href="common.css" />
 		<style>
 			.board {
@@ -47,20 +47,22 @@
 		<script type="module">
 			import { addDefs, drawBoard, playGame } from './board.js';
 
-			// board: its left/top and width in px; title and tagline centered on titleX; stacked: the tagline in two lines
+			// board: its left/top and width in px; title and tagline centered on titleX; stacked: the tagline in two lines;
+			// game: its size, seed, and how many moves in (the cover's is the 7-hex board, which reads at 630×500)
 			const LAYOUTS = {
 				cover: {
 					W: 630,
 					H: 500,
-					BX: 205,
-					BY: 46,
-					BW: 220,
+					BX: 165,
+					BY: 22,
+					BW: 300,
 					titleX: 315,
 					titleTop: 318,
 					titleSize: 64,
 					lineW: 340,
 					taglineTop: 418,
-					taglineSize: 24
+					taglineSize: 24,
+					game: { size: 7, seed: 38, moves: 12 }
 				},
 				embed: {
 					W: 640,
@@ -74,16 +76,17 @@
 					lineW: 170,
 					taglineTop: 231,
 					taglineSize: 19,
-					stacked: true
+					stacked: true,
+					game: { size: 13, seed: 2, moves: 20 }
 				}
 			};
 
-			// the game on the board: size, seed, and how many moves in (?size=&seed=&moves= override, for trying others)
-			const q = new URLSearchParams(location.search);
-			const GAME = { size: +(q.get('size') ?? 13), seed: +(q.get('seed') ?? 2), moves: +(q.get('moves') ?? 20) };
-
 			const hash = location.hash.slice(1);
 			const L = LAYOUTS[hash.split('-')[0]] ?? LAYOUTS.cover;
+
+			// the layout's game (?size=&seed=&moves= override, for trying others)
+			const q = new URLSearchParams(location.search);
+			const GAME = { size: +(q.get('size') ?? L.game.size), seed: +(q.get('seed') ?? L.game.seed), moves: +(q.get('moves') ?? L.game.moves) };
 			Object.assign(document.body.style, { width: L.W + 'px', height: L.H + 'px' });
 			addDefs();
 
