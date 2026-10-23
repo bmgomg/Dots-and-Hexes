@@ -49,7 +49,8 @@ class Store {
 
 	noStartTip = $state(false);
 
-	mode = $state({ opp: ROBOT, size: 19, level: 'medium' });
+	// a newcomer's first game: the small board against the easiest robot
+	mode = $state({ opp: ROBOT, size: 7, level: 'easy' });
 	stats = $state(newStats());
 
 	// Raw: the engine reads these arrays over and over, and every move replaces the game whole.
@@ -136,8 +137,8 @@ class Store {
 
 			this.mode = {
 				opp: opp === HUMAN ? HUMAN : ROBOT,
-				size: SIZES.includes(size) ? size : 19,
-				level: LEVELS.includes(level) ? level : 'medium'
+				size: SIZES.includes(size) ? size : 7,
+				level: LEVELS.includes(level) ? level : 'easy'
 			};
 
 			this.noStartTip = !!job.noStartTip;
