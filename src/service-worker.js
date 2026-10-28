@@ -1,7 +1,8 @@
 // Offline play. The app is all client-side, so with its files cached it runs with no network at all.
 // - On install: every built file and every file in static/, except the music, into a cache per build.
-// - The music (1.8 MB) is cached the first time it is fetched, in a cache of its own that outlives
+// - The music (the biggest file) is cached the first time it is fetched, in a cache of its own that outlives
 //   builds: its file name carries a content hash, so it is only fetched again when it changes.
+// - The page itself comes from the network when it answers within NAVIGATE_TIMEOUT, so updates show, else the cache.
 // - A new build's cache replaces the old one when it activates (SvelteKit registers this file;
 //   the itch.io build turns it off, see svelte.config.js).
 import { build, files, version } from '$service-worker';
@@ -9,7 +10,11 @@ import { build, files, version } from '$service-worker';
 const APP = `app-${version}`;
 const MEDIA = 'media';
 
-const isMedia = (path) => /\.(mp3|ogg)$/.test(path) && path.includes('music');
+// how long the page may take from the network before the cached one is used
+const NAVIGATE_TIMEOUT = 3000;
+const SLOW = 'slow';
+
+const isMedia =(path) => /\.(mp3|ogg)$/.test(path) && path.includes('music');
 
 const media = build.filter(isMedia);
 const assets = [...build, ...files].filter((path) => !isMedia(path));
@@ -84,7 +89,7 @@ self.addEventListener('fetch', (event) => {
 			}
 
 			// everything else, the page included: the network first, so updates show, then the cache
-			try {
+			const network = (async () => {
 				const res = await fetch(req);
 
 				if (res.status === 200 && req.mode === 'navigate') {
@@ -93,8 +98,37 @@ self.addEventListener('fetch', (event) => {
 				}
 
 				return res;
+			})();
+			const cached = async () => (await caches.match(req)) ?? (req.mode === 'navigate' ? await caches.match('/') : undefined);
+
+			// a page the network is slow to send, as on a poor connection, comes from the cache instead;
+			// the network can still finish in the background, to have the update cached for next time
+			if (req.mode === 'navigate') {
+				const timeout = new Promise((resolve) => setTimeout(() => resolve(SLOW), NAVIGATE_TIMEOUT));
+				const first = await Promise.race([network.catch(() => null), timeout]);
+
+				if (first instanceof Response) {
+					return first;
+				}
+
+				const hit = await cached();
+
+				if (hit) {
+					if (first === SLOW) {
+						event.waitUntil(network.catch(() => {}));
+					}
+
+					return hit;
+				}
+
+				// nothing cached yet: wait for the network after all
+				return network;
+			}
+
+			try {
+				return await network;
 			} catch (err) {
-				const hit = (await caches.match(req)) ?? (req.mode === 'navigate' ? await caches.match('/') : undefined);
+				const hit = await cached();
 
 				if (hit) {
 					return hit;
