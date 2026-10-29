@@ -1,5 +1,5 @@
 // Offline play. The app is all client-side, so with its files cached it runs with no network at all.
-// - On install: every built file and every file in static/, except the music, into a cache per build.
+// - On install: every built file and every file in static/, except the music and platform icons, into a cache per build.
 // - The music (the biggest file) is cached the first time it is fetched, in a cache of its own that outlives
 //   builds: its file name carries a content hash, so it is only fetched again when it changes.
 // - The page itself comes from the network when it answers within NAVIGATE_TIMEOUT, so updates show, else the cache.
@@ -14,10 +14,13 @@ const MEDIA = 'media';
 const NAVIGATE_TIMEOUT = 3000;
 const SLOW = 'slow';
 
-const isMedia =(path) => /\.(mp3|ogg)$/.test(path) && path.includes('music');
+const isMedia = (path) => /\.(mp3|ogg)$/.test(path) && path.includes('music');
+
+// home screen and tile icons in all their sizes, for the OS to fetch when the app is installed; the game never uses them
+const isPlatformIcon = (path) => /^\/(ios|android|windows\d*)\//.test(path);
 
 const media = build.filter(isMedia);
-const assets = [...build, ...files].filter((path) => !isMedia(path));
+const assets = [...build, ...files].filter((path) => !isMedia(path) && !isPlatformIcon(path));
 
 self.addEventListener('install', (event) => {
 	event.waitUntil(
