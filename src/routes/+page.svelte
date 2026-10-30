@@ -17,7 +17,7 @@
 
 		const onResize = () => {
 			const r = document.querySelector('#app').getBoundingClientRect();
-			ss.scale = Math.min(1, r.width / DX, r.height / DY);
+			ss.scale = Math.min(r.width / DX, r.height / DY);
 		};
 
 		// the music pauses while the window is in the background: on is 1, paused is -1

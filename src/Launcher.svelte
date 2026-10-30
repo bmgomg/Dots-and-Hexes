@@ -165,12 +165,16 @@
 		opacity: 1;
 	}
 
+	/* picked, it's pressed in and springs back, as a button does */
 	.selected {
 		pointer-events: none;
+		animation: pick 0.22s ease-out;
 	}
 
-	/* a loose loop in blue pencil around the choice */
-	.selected::after {
+	/* A loose loop in blue pencil around the choice, drawn round it from the top left, one way round (a sweeping
+	   mask); the one it leaves is erased (faded), and only then undrawn, out of sight. */
+	.size::after,
+	.skill::after {
 		content: '';
 		position: absolute;
 		inset: -2px;
@@ -179,6 +183,18 @@
 		transform: rotate(-6deg);
 		filter: url(#pencil);
 		pointer-events: none;
+		opacity: 0;
+		--sweep: 0deg;
+		mask: conic-gradient(from -50deg, #000 var(--sweep), transparent 0);
+		transition:
+			opacity 0.25s,
+			--sweep 0s 0.25s;
+	}
+
+	.selected::after {
+		opacity: 1;
+		--sweep: 360deg;
+		transition: --sweep 0.4s ease-in-out;
 	}
 
 	/* the sketches sit on one line, so the numbers under them line up */
@@ -233,5 +249,38 @@
 		overflow: visible;
 		filter: url(#pencil);
 		pointer-events: none;
+	}
+
+	/* registered, so the loop's sweep can transition */
+	@property --sweep {
+		syntax: '<angle>';
+		inherits: false;
+		initial-value: 0deg;
+	}
+
+	@keyframes pick {
+		from {
+			scale: 0.95;
+		}
+
+		60% {
+			scale: 1.02;
+		}
+
+		to {
+			scale: 1;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.selected {
+			animation: none;
+		}
+
+		.size::after,
+		.skill::after,
+		.selected::after {
+			transition: opacity 0.25s;
+		}
 	}
 </style>

@@ -1,4 +1,3 @@
-import { chooseMove } from './ai';
 import { APP_STATE, DX, HUMAN, LEVELS, MSG_SINGLES, MSG_START_TIP, ROBOT, WINNER_DRAW } from './const';
 import { applyMove, boardOf, deadDots, emptyGame, legalMoves, scores, SIZES } from './engine';
 import { _sound, sfx, tap, whoosh } from './sound.svelte';
@@ -7,6 +6,22 @@ import { post } from './utils';
 export const newStats = () => ({ plays: 0, wins1: 0, wins2: 0, total: 0, best: 0 });
 
 let moveTimer;
+
+// The robot's search runs in a worker, so the line just drawn keeps animating while it thinks. Each ask has
+// an id; a new game moves `asked` on, so a late answer is dropped.
+let worker;
+let asked = 0;
+
+const think = (size, drawn, level) => {
+	worker ??= new Worker(new URL('./ai.worker.js', import.meta.url), { type: 'module' });
+
+	const id = ++asked;
+
+	return new Promise((resolve) => {
+		worker.onmessage = ({ data }) => data.id === asked && resolve(data.move);
+		worker.postMessage({ id, size, drawn, level });
+	});
+};
 
 // the robot's pace, in ms: before its first dot, then its second, then the line; and the extra
 // pause before it moves again after a claim
@@ -172,6 +187,7 @@ class Store {
 
 	newGame = () => {
 		clearTimeout(moveTimer);
+		asked++;
 		this.busy = false;
 		this.message = null;
 		this.prompt = null;
@@ -308,13 +324,16 @@ class Store {
 	};
 
 	// Like a player: it taps one dot, then the other, slowly enough to follow. After closing a hex it
-	// waits a little longer before moving again, so the claim registers first.
-	doRobotMove = () => {
-		const mv = chooseMove(this.board, this.game.drawn, this.mode.level);
+	// waits a little longer before moving again, so the claim registers first. Its search counts toward the
+	// wait for its first dot.
+	doRobotMove = async () => {
 		const claimed = this.game.last?.hexes.length > 0;
+		const t0 = performance.now();
 
 		this.busy = true;
 		this.dismissStartTip();
+
+		const mv = await think(this.game.size, [...this.game.drawn], this.mode.level);
 
 		moveTimer = post(
 			() => {
@@ -331,7 +350,7 @@ class Store {
 					}, ROBOT_DRAW);
 				}, ROBOT_SECOND);
 			},
-			ROBOT_FIRST + (claimed ? ROBOT_AGAIN : 0)
+			Math.max(0, ROBOT_FIRST + (claimed ? ROBOT_AGAIN : 0) - (performance.now() - t0))
 		);
 	};
 

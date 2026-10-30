@@ -31,6 +31,7 @@ message band, prompts, toolbar (back, resign, reset stats, sfx, music).
   `drawn[e]` / `owner[h]` hold the player (1 or 2), or -1.
 - `src/ai.js` — `chooseMove(board, drawn, level)`: easy / medium / hard, ported from the prototype, and killer:
   hard plus a perfect endgame (with `SOLVE_LINES` (20) or fewer lines left, an exact alpha-beta search).
+  It runs in a worker (`src/ai.worker.js`), so the line just drawn keeps animating while the robot thinks.
 - `src/sound.svelte.js` — Triangula's sound module (Howler): `_sound` (`sfx`, `music` on/off, saved with the mode),
   `sfx(name)` from the sprite, `tap`, `plop`, `whoosh`, `playMusic`.
 - `src/service-worker.js` — offline play: every built and static file except the music is cached per build on
@@ -45,11 +46,11 @@ message band, prompts, toolbar (back, resign, reset stats, sfx, music).
   (`#fill1/2/3`) and doodles (`#underline2`, `#swoosh`), in pixels; mounted once in `+page.svelte`.
 - Colors are tokens in `routes/+layout.svelte` (`--bg`, `--ink`, `--line`, `--last`, `--p1`, `--p2`, `--p2-text`,
   `--friend`, `--gold`, `--desk` (also the theme color in `app.html` and the manifest), …), with the global `.hl` (highlighter) and `.card` (taped index card) classes.
-- Cursors (`src/lib/cursors`, inlined by Vite): a yellow pencil everywhere, the board included (`--pencil`, click point at
-  the tip), and a pointing hand over buttons and other choices (`--hand`, at the fingertip). Use `cursor: var(--hand)`, not `pointer`.
+- Cursor (`src/lib/cursors`, inlined by Vite): one yellow pencil everywhere, buttons and the board included (`--pencil`,
+  click point at the tip). Use `cursor: var(--pencil)`, not `pointer`.
 - The rest follow Triangula's components: `Home`, `Launcher`, `Game Page`, `Stats`, `Scoreboard`, `Avatar`, `Pie`,
   `Message`, `Prompt`, `Toolbar`, `Splash`, `Frame` (the graph pad). `Button.svelte` is the one plain handwritten
-  button (toolbar, launcher, prompts; it taps; a toggle passes `alt`, its other label, so it keeps one width); `Hex.svelte` draws the hexagon icons (`color` p1 / p2 / friend).
+  button (toolbar, launcher, prompts; it taps; a toggle passes `alt`, its other label, so it keeps one width; a click presses it in and springs it back, and it acts 0.15 s in); `Hex.svelte` draws the hexagon icons (`color` p1 / p2 / friend).
 
 ## Build (as in Triangula)
 

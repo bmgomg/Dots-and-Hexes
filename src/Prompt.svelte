@@ -1,6 +1,6 @@
 <script>
 	import { fade } from 'svelte/transition';
-	import { PROMPT_NO, PROMPT_PLAY_AGAIN, PROMPT_RESET_STATS, PROMPT_RESIGN, PROMPT_START } from './const';
+	import { PROMPT_NO, PROMPT_PLAY_AGAIN, PROMPT_RESET_STATS, PROMPT_RESIGN, PROMPT_START, SCREEN_OUT } from './const';
 	import Button from './Button.svelte';
 	import { ss } from './shared.svelte';
 
@@ -18,8 +18,9 @@
 </script>
 
 {#if ss.gameScreen && ss.game && on}
+	<!-- global both ways: the prompt fades in and out with the whole block too, not only when it changes -->
 	{#key ss.prompt}
-		<div class="prompt grid card" in:fade|global={{ delay }} out:fade>
+		<div class="prompt grid card" in:fade|global={{ delay }} out:fade|global={SCREEN_OUT}>
 			{#if ss.prompt === PROMPT_RESET_STATS}
 				<Button big label={ss.prompt} onClick={ss.resetStats} />
 				<Button big label={PROMPT_NO} onClick={dismiss} />
